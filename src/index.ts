@@ -1,6 +1,16 @@
+import { AnyClass } from '@ergodark/types'
+
+/**
+ * Defines a special `name` property on an error class that improves DX.
+ */
+export function makeNamedError(ErrorClass: AnyClass, name: string) {
+    Object.defineProperty(ErrorClass, 'name', { value: name });
+    Object.defineProperty(ErrorClass.prototype, 'name', { value: name });
+}
+
 export class AppError extends Error {}
 
-Object.defineProperty(AppError, 'name', { value: 'AppError' });
+makeNamedError(AppError, 'AppError');
 
 export class GuruMeditationError extends AppError {
     constructor(message?: string) {
@@ -8,7 +18,7 @@ export class GuruMeditationError extends AppError {
     }
 }
 
-Object.defineProperty(GuruMeditationError, 'name', { value: 'GuruMeditationError' });
+makeNamedError(GuruMeditationError, 'GuruMeditationError');
 
 export class HookError extends AppError {
     constructor(message?: string) {
@@ -16,7 +26,7 @@ export class HookError extends AppError {
     }
 }
 
-Object.defineProperty(HookError, 'name', { value: 'HookError' });
+makeNamedError(HookError, 'HookError');
 
 export class FetchError extends AppError {
     constructor(res: Response, error?: string) {
@@ -24,7 +34,7 @@ export class FetchError extends AppError {
     }
 }
 
-Object.defineProperty(FetchError, 'name', { value: 'FetchError' });
+makeNamedError(FetchError, 'FetchError');
 
 export class NotAuthorizedError extends AppError {
     constructor(message?: string) {
@@ -32,7 +42,7 @@ export class NotAuthorizedError extends AppError {
     }
 }
 
-Object.defineProperty(NotAuthorizedError, 'name', { value: 'NotAuthorizedError' });
+makeNamedError(NotAuthorizedError, 'NotAuthorizedError');
 
 export class NotFoundError<T=string> extends AppError {
     constructor(reference?: T) {
@@ -40,7 +50,7 @@ export class NotFoundError<T=string> extends AppError {
     }
 }
 
-Object.defineProperty(NotFoundError, 'name', { value: 'NotFoundError' });
+makeNamedError(NotFoundError, 'NotFoundError');
 
 export class KeyError extends AppError {
     constructor() {
@@ -48,7 +58,7 @@ export class KeyError extends AppError {
     }
 }
 
-Object.defineProperty(KeyError, 'name', { value: 'KeyError' });
+makeNamedError(KeyError, 'KeyError');
 
 /**
  * An alias of KeyError.
@@ -61,4 +71,4 @@ export class ValidationError extends AppError {
     }
 }
 
-Object.defineProperty(ValidationError, 'name', { value: 'ValidationError' });
+makeNamedError(ValidationError, 'ValidationError');

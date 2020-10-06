@@ -1,6 +1,6 @@
 {
   "name": "named-app-errors",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A handy set of \"named\" (i.e. in the stack trace) error classes with TypeScript support",
   "keywords": [
     "app",
@@ -54,6 +54,7 @@
     "@babel/plugin-transform-react-jsx-source": "^7.10.5",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
+    "@ergodark/types": "^1.0.12",
     "@types/confusing-browser-globals": "^1.0.0",
     "@types/jest": "^26.0.14",
     "@types/node": "^14.11.2",

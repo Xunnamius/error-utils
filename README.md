@@ -22,16 +22,38 @@ npm install named-app-errors
 
 ## Usage
 
+When creating your own error classes, you should subclass [AppError](#apperror)
+and call the special `makeNamedError` method afterwards like so:
+
 ```TypeScript
-import { AppError, GuruMeditationError } from 'named-app-errors'
+import { AppError, makeNamedError } from 'named-app-errors'
+
+export class CustomSpecialError extends AppError {
+    constructor(message?: string) {
+        super(message ?? 'something important failed');
+    }
+}
+
+makeNamedError(CustomSpecialError, 'CustomSpecialError');
+```
+
+It might seem redundant to supply both the class object and a class name string,
+but it is necessary for the shiny new error name to survive minification.
+
+Afterwards, you can use your error class like so:
+
+```TypeScript
+import { AppError, CustomSpecialError } from 'named-app-errors'
 
 try {
-    throw new GuruMeditationError();
+    // ...
+    throw new CustomSpecialError();
+    // ...
 }
 
 catch(e) {
     if(e instanceof AppError)
-        console.error(e.message) // ==> "GuruMeditationError"
+        console.error(e) // ==> "CustomSpecialError: something important failed"
 
     else
         throw e;
@@ -43,7 +65,6 @@ catch(e) {
 This library provides the following types:
 
 + [AppError](#apperror)
-+ [NamedAppError](#namedapperror)
 + [GuruMeditationError](#gurumeditationerror)
 + [HookError](#hookerror)
 + [FetchError](#fetcherror)
