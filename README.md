@@ -5,9 +5,10 @@
 # named-app-errors
 
 This package exports a set of \"named\" (i.e. in the stack trace) error classes
-(extending the [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) class) with TypeScript support. The output of these
-errors provides better DX than normal since the error type's name is included in
-the message text.
+(extending the
+[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
+class) with TypeScript support. The output of these errors provides better DX
+than normal since the error type's name is included when `toString()` is called.
 
 This package includes TypeScript types and provides:
 
@@ -91,19 +92,6 @@ checks in `catch` blocks (so that we're only handling our application's errors).
 import { AppError } from 'named-app-errors'
 
 throw new AppError();
-```
-
-### NamedAppError
-```TypeScript
-NamedAppError(name: string, message?: string)
-```
-
-A generic application error that has a name. A message is optional.
-
-```TypeScript
-import { NamedAppError } from 'named-app-errors'
-
-throw new NamedAppError('MyCustomError');
 ```
 
 ### GuruMeditationError
