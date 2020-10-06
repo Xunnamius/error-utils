@@ -8,10 +8,5 @@ module.exports = {
     testRunner: 'jest-circus/runner',
     verbose: false,
     testPathIgnorePatterns: [ '/node_modules/' ],
-    moduleNameMapper: {
-        // '^universe/(.*)$': '<rootDir>/src/$1',
-        // '^multiverse/(.*)$': '<rootDir>/lib/$1',
-        // '^types/(.*)$': '<rootDir>/types/$1'
-    },
     setupFilesAfterEnv: [ 'jest-extended' ]
 };
