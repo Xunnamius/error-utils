@@ -80,7 +80,7 @@ This library provides the following types:
 AppError(message?: string, fileName?: string, lineNumber?: number)
 ```
 
-A generic application error. Direct descendant of
+An `AppError` indicates an error  generic application error. Direct descendant of
 [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
 with the same constructor and no additional functionality. This class is meant
 to be used as an application-wide base error class, which makes it useful for
@@ -99,7 +99,9 @@ throw new AppError();
 GuruMeditationError(message?: string)
 ```
 
-A generic application error.
+A `GuruMeditationError` indicates the occurrence of a supposedly impossible
+runtime condition. Usually requires the assistance of a guru to debug
+efficiently. Scary!
 
 ```TypeScript
 import { AppError } GuruMeditationError 'named-app-errors'
@@ -112,7 +114,7 @@ throw new GuruMeditationError();
 HookError(message?: string)
 ```
 
-A generic application error.
+A `HookError` indicates an error during React Hook execution.
 
 ```TypeScript
 import { HookError } from 'named-app-errors'
@@ -125,7 +127,7 @@ throw new HookError();
 FetchError(res: Response, error?: string)
 ```
 
-A generic application error.
+A `FetchError` indicates an error while attempting to fetch an HTTP resource.
 
 ```TypeScript
 import { FetchError } from 'named-app-errors'
@@ -138,7 +140,8 @@ throw new FetchError();
 NotAuthorizedError(message?: string)
 ```
 
-A generic application error.
+A `NotAuthorizedError` indicates the operation failed due to lack of
+authorization.
 
 ```TypeScript
 import { AppError NotAuthorizedError from 'named-app-errors'
@@ -151,7 +154,8 @@ throw new NotAuthorizedError();
 NotFoundError(reference?: T)
 ```
 
-A generic application error.
+A `NotFoundError` indicates the operation failed because the subject was not
+found.
 
 ```TypeScript
 import { NotFoundError } from 'named-app-errors'
@@ -164,7 +168,9 @@ throw new NotFoundError();
 KeyTypeError()
 ```
 
-A generic application error.
+A `KeyTypeError` indicates an error handling a key (invalid, bad, etc). This
+error does not reveal any additional information about the key or the error for
+security reasons.
 
 ```TypeScript
 import { KeyTypeError } from 'named-app-errors'
@@ -177,27 +183,12 @@ throw new KeyTypeError();
 ValidationError(message?: string)
 ```
 
-A generic application error.
+A `ValidationError` indicates an error during validation.
 
 ```TypeScript
 import { ValidationError } from 'named-app-errors'
 
 throw new ValidationError();
-```
-
-
-Represents an object with well-defined NextApiRequest and NextApiResponse
-properties where generic type `T` is passed to
-[NextApiResponse&lt;T&gt;](https://nextjs.org/docs/basic-features/typescript#api-routes).
-
-Specifying `T` is optional. By default, `T = Record<string, unknown>`.
-
-```TypeScript
-import type { NextParamsRR } from '@ergodark/next-types'
-
-export async function addToRequestLog({ req, res }: NextParamsRR) {
-    ...
-}
 ```
 
 ## Contributing
