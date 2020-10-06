@@ -54,7 +54,6 @@
     "@babel/plugin-proposal-numeric-separator": "^7.10.4",
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@babel/plugin-proposal-throw-expressions": "^7.10.4",
-    "@babel/plugin-transform-react-jsx-source": "^7.10.5",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
     "@types/confusing-browser-globals": "^1.0.0",

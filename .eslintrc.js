@@ -55,7 +55,7 @@ module.exports = {
     },
     overrides: [{
         // ? ... but enable these rules specifically for TypeScript files
-        files: ['*.ts', '*.tsx'],
+        files: ['*.ts'],
         rules: {
             'no-undef': 'error',
             '@typescript-eslint/no-var-requires': 'error',
@@ -82,7 +82,7 @@ module.exports = {
         ],
         // ? Switch parsers depending on which type of file we're looking at
         'import/parsers': {
-            '@typescript-eslint/parser': ['.ts', '.tsx'],
+            '@typescript-eslint/parser': ['.ts'],
             'babel-eslint': ['.js'],
         },
         'import/ignore': [
