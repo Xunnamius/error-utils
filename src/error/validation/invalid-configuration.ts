@@ -5,7 +5,16 @@ import { ValidationError } from './validation';
  * Represents a user-provided misconfiguration.
  */
 export class InvalidConfigurationError extends ValidationError {
-  constructor(public readonly details?: string, message?: string) {
+  /**
+   * Represents a user-provided misconfiguration.
+   */
+  constructor(details?: string);
+  /**
+   * This constructor syntax is used by subclasses when calling this constructor
+   * via `super`.
+   */
+  constructor(details: string, message: string);
+  constructor(public readonly details: string, message: string | undefined = undefined) {
     super(message ?? 'invalid configuration' + (details ? `: ${details}` : ''));
   }
 }
