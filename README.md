@@ -50,8 +50,7 @@ Note that each constructor's parameter list ends with the `message?: string`
 parameter. Adhering to this pattern allows easy extension of your error classes.
 Additionally, the `public readonly`
 [parameter property](https://www.typescriptlang.org/docs/handbook/2/classes.html#parameter-properties)
-can be used to expose any extra constructor arguments. See
-`DeepCustomSpecialError` below for an example.
+can be used to expose any extra constructor arguments. See below for an example.
 
 Afterwards, you can use your error classes like so:
 
