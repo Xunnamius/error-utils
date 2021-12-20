@@ -67,32 +67,57 @@ describe('::HttpError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.HttpError())).toThrow('HTTP operation failed');
+    expect(() => toss(new e.HttpError())).toThrow('HTTP sub-request failed mysteriously');
 
-    expect(() =>
-      toss(new e.HttpError({ statusCode: 500 } as unknown as ServerResponse))
-    ).toThrow('[HTTP 500] operation failed');
+    expect(() => toss(new e.HttpError({ statusCode: 500, statusMessage: '' }))).toThrow(
+      'sub-request failed [HTTP 500]'
+    );
+
+    expect(() => toss(new e.HttpError({ status: 500, statusText: '' }))).toThrow(
+      'sub-request failed [HTTP 500]'
+    );
 
     expect(() =>
       toss(
         new e.HttpError({
           statusCode: 500,
           statusMessage: 'x'
-        } as unknown as ServerResponse)
+        })
       )
-    ).toThrow('[HTTP 500] x');
+    ).toThrow('x [HTTP 500]');
+
+    expect(() =>
+      toss(
+        new e.HttpError({
+          status: 500,
+          statusText: 'x'
+        })
+      )
+    ).toThrow('x [HTTP 500]');
 
     expect(() =>
       toss(
         new e.HttpError(
           {
             statusCode: 500,
-            statusMessage: 'x'
-          } as unknown as ServerResponse,
+            statusMessage: 'y'
+          },
           'condition'
         )
       )
-    ).toThrow('[HTTP 500] condition');
+    ).toThrow('condition [HTTP 500]');
+
+    expect(() =>
+      toss(
+        new e.HttpError(
+          {
+            status: 500,
+            statusText: 'x'
+          },
+          'condition'
+        )
+      )
+    ).toThrow('condition [HTTP 500]');
 
     expect(() =>
       toss(
@@ -100,7 +125,7 @@ describe('::HttpError', () => {
           {
             statusCode: 500,
             statusMessage: 'x'
-          } as unknown as ServerResponse,
+          },
           'condition',
           'z'
         )
@@ -112,11 +137,18 @@ describe('::HttpError', () => {
     expect.hasAssertions();
 
     const res = {
-      statusCode: 500,
-      statusMessage: 'x'
-    } as unknown as ServerResponse;
+      status: 500,
+      statusText: 'x'
+    };
 
     expect(new e.HttpError(res, 'x', 'y')).toHaveProperty('res', res);
+  });
+
+  it('works with ServerResponse type (type check)', async () => {
+    expect.assertions(0);
+
+    const res = { statusCode: 500, statusMessage: '' } as unknown as ServerResponse;
+    new e.HttpError(res);
   });
 });
 

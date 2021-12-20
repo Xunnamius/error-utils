@@ -1,7 +1,14 @@
 import { makeNamedError } from '../../make-named-error';
 import { AppError } from '../app';
 
-import type { ServerResponse } from 'http';
+type ResponseShapeA = { statusCode: number; statusMessage: string };
+type ResponseShapeB = { status: number; statusText: string };
+type ServerResponseLike = ResponseShapeA | ResponseShapeB;
+
+const isResponseShapeA = (o: ServerResponseLike): o is ResponseShapeA => {
+  const res = o as ResponseShapeA;
+  return res.statusCode !== undefined && res.statusMessage !== undefined;
+};
 
 /**
  * Represents a generic HTTP or related failure.
@@ -10,25 +17,30 @@ export class HttpError extends AppError {
   /**
    * Represents a generic HTTP or related failure.
    */
-  constructor(res?: ServerResponse, error?: string);
+  constructor(res?: ServerResponseLike, error?: string);
   /**
    * This constructor syntax is used by subclasses when calling this constructor
    * via `super`.
    */
-  constructor(res: ServerResponse, error: string, message: string);
+  constructor(res: ServerResponseLike, error: string, message: string);
   constructor(
-    public readonly res: ServerResponse,
-    error: string,
+    public readonly res: ServerResponseLike | undefined,
+    error: string | undefined,
     message: string | undefined = undefined
   ) {
-    super(
-      message ??
-        (res
-          ? `[HTTP ${res?.statusCode}] ${
-              error ?? res?.statusMessage ?? 'operation failed'
-            }`
-          : 'HTTP operation failed')
-    );
+    if (message) {
+      super(message);
+    } else if (!res) {
+      super('HTTP sub-request failed mysteriously');
+    } else {
+      super(
+        `${
+          error ||
+          (isResponseShapeA(res) ? res.statusMessage : res.statusText) ||
+          'sub-request failed'
+        } [HTTP ${isResponseShapeA(res) ? res.statusCode : res.status}]`
+      );
+    }
   }
 }
 makeNamedError(HttpError, 'HttpError');

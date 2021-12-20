@@ -195,12 +195,21 @@ throw new GuruMeditationError();
 
 ```TypeScript
 HttpError(
-  public readonly res?: ServerResponse,
+  public readonly res?: ServerResponseLike,
   error?: string
 ) extends AppError
 ```
 
 `HttpError` represents a generic HTTP, request, response, or related failure.
+
+The `ServerResponseLike` type is compatible with response types from Node.js and
+most fetch libraries:
+
+```TypeScript
+type ResponseShapeA = { statusCode: number; statusMessage: string };
+type ResponseShapeB = { status: number; statusText: string };
+type ServerResponseLike = ResponseShapeA | ResponseShapeB;
+```
 
 #### Example
 
