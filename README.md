@@ -36,8 +36,12 @@ export class CustomSpecialError extends AppError {
 makeNamedError(CustomSpecialError, 'CustomSpecialError');
 
 export class DeepCustomSpecialError extends CustomSpecialError {
-    constructor(public readonly details?: string, message?: string) {
-        super(message ?? `something important failed: ${details ?? 'unknown'}`);
+    constructor(details?: string)
+    constructor(
+      public readonly details = '(no details)',
+      message: string | undefined = undefined
+    ) {
+        super(message ?? `something important failed: ${details}`);
     }
 }
 makeNamedError(DeepCustomSpecialError, 'DeepCustomSpecialError');
@@ -46,9 +50,10 @@ makeNamedError(DeepCustomSpecialError, 'DeepCustomSpecialError');
 It might seem redundant to supply both the class object and a class name string,
 but it is necessary for the shiny new error name to survive minification.
 
-Note that each constructor's parameter list ends with the `message?: string`
-parameter. Adhering to this pattern allows easy extension of your error classes.
-Additionally, the `public readonly`
+Note how `DeepCustomSpecialError`'s parameter list ends with
+`message: string | undefined = undefined`. Ensuring your error constructor
+always accepts an optional `message` as its final parameter allows easy
+extension of all `AppError` subclasses. Additionally, the `public readonly`
 [parameter property](https://www.typescriptlang.org/docs/handbook/2/classes.html#parameter-properties)
 can be used to expose any extra constructor arguments.
 
@@ -67,8 +72,8 @@ try {
     throw new DeepCustomSpecialError('bad bad not good');
   }
 } catch (e) {
-  if (e instanceof CustomSpecialError) { // ◄ Catches both custom error types
-    e.details && console.warn(e.details);
+  if (e instanceof DeepCustomSpecialError) {
+    console.warn(e.details);
     externalLogger(e);
   } else if (e instanceof AppError) { // ◄ Catches any other AppError subtypes
     console.error(e);
@@ -96,9 +101,8 @@ This library comes with the following error types built in:
   - [ValidationError](#validationerror)
     - [InvalidConfigurationError](#invalidconfigurationerror)
     - [InvalidEnvironmentError](#invalidenvironmenterror)
-    - [InvalidIdError](#invalididerror)
-    - [InvalidParameterError](#invalidparametererror)
-    - [InvalidTokenError](#invalidtokenerror)
+    - [InvalidItemError](#invaliditemerror)
+    - [InvalidSecretError](#invalidsecreterror)
 
 ### AppError
 
@@ -190,7 +194,10 @@ throw new GuruMeditationError();
 ### HttpError
 
 ```TypeScript
-HttpError(public readonly res: ServerResponse, error?: string, message?: string) extends AppError
+HttpError(
+  public readonly res?: ServerResponse,
+  error?: string
+) extends AppError
 ```
 
 `HttpError` represents a generic HTTP, request, response, or related failure.
@@ -239,10 +246,13 @@ throw new NotFoundError('user');
 ### ItemNotFoundError
 
 ```TypeScript
-ItemNotFoundError<T = undefined>(public readonly ref?: T, message?: string) extends NotFoundError
+ItemNotFoundError<T = undefined>(
+  public readonly item?: T,
+  public readonly itemName?: string
+) extends NotFoundError
 ```
 
-`ItemNotFoundError` represents the failure to locate a specified item.
+`ItemNotFoundError` represents the failure to locate a specific item.
 
 #### Example
 
@@ -319,7 +329,9 @@ throw new ValidationError('invalid data received');
 ### InvalidConfigurationError
 
 ```TypeScript
-InvalidConfigurationError(public readonly details?: string, message?: string) extends ValidationError
+InvalidConfigurationError(
+  public readonly details?: string
+) extends ValidationError
 ```
 
 `InvalidConfigurationError` represents a user-provided misconfiguration.
@@ -335,7 +347,9 @@ throw new InvalidConfigurationError('config at "./myapp.config.js" is invalid');
 ### InvalidEnvironmentError
 
 ```TypeScript
-InvalidEnvironmentError(public readonly details?: string, message?: string) extends ValidationError
+InvalidEnvironmentError(
+  public readonly details?: string
+) extends ValidationError
 ```
 
 `InvalidEnvironmentError` represents a misconfigured runtime environment.
@@ -348,18 +362,21 @@ import { InvalidEnvironmentError } from 'named-app-errors';
 throw new InvalidEnvironmentError('missing NODE_ENV in process.env');
 ```
 
-### InvalidIdError
+### InvalidItemError
 
 ```TypeScript
-InvalidIdError<T = unknown>(public readonly id?: T, message?: string) extends ValidationError
+InvalidItemError<T = undefined>(
+  public readonly item?: T,
+  public readonly itemName?: string = 'id'
+) extends ValidationError
 ```
 
-`InvalidIdError` represents encountering an invalid or illegal identifier.
+`InvalidItemError` represents encountering a specific invalid item.
 
 #### Example
 
 ```TypeScript
-import { InvalidIdError } from 'named-app-errors';
+import { InvalidItemError } from 'named-app-errors';
 import { ObjectId } from 'mongodb';
 
 const ref = 'some-ref-string';
@@ -368,47 +385,29 @@ let oid: ObjectId;
 try {
   oid = new ObjectId(ref);
 } catch {
-  throw new InvalidIdError(ref);
+  throw new InvalidItemError(ref);
 }
 ```
 
-### InvalidParameterError
+### InvalidSecretError
 
 ```TypeScript
-InvalidParameterError(public readonly param: string | string[], message?: string) extends ValidationError
+InvalidSecretError(secretType?: string) extends ValidationError
 ```
 
-`InvalidParameterError` represents encountering one or more invalid, illegal, or
-otherwise unexpected parameters/arguments.
-
-#### Example
-
-```TypeScript
-import { InvalidParameterError } from 'named-app-errors';
-
-throw new InvalidParameterError('username');
-throw new InvalidParameterError(['username', 'id', 'date']);
-// Handles empty arrays too
-throw new InvalidParameterError([]);
-```
-
-### InvalidTokenError
-
-```TypeScript
-InvalidTokenError() extends ValidationError
-```
-
-`InvalidTokenError` represents a failure while handling credentials, key
+`InvalidSecretError` represents a failure while validating credentials, key
 material, some token, or other sensitive data. This error does not reveal any
 additional information about the data or the error other than that it occurred.
 
 ```TypeScript
-import { InvalidTokenError } from 'named-app-errors';
+import { InvalidSecretError } from 'named-app-errors';
 
 const secret = ...
 const token = new BearerToken(secret);
 
 if(!token) {
-  throw new InvalidTokenError();
+  throw new InvalidSecretError();
+  // Or:
+  throw new InvalidSecretError('bearer token');
 }
 ```
