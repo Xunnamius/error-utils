@@ -1,17 +1,13 @@
 {
-    "extends": "./tsconfig.json",
-    "exclude": [
-        "node_modules",
-        "dist",
-        "test"
-    ],
-    "compilerOptions": {
-        "outDir": "dist/modules",
-        "declaration": true,
-        "isolatedModules": false,
-        "noEmit": false,
-        "checkJs": false,
-        "allowJs": false,
-        "emitDeclarationOnly": true
-    }
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "dist", "test"],
+  "compilerOptions": {
+    "outDir": "dist/modules",
+    "declaration": true,
+    "isolatedModules": false,
+    "noEmit": false,
+    "checkJs": false,
+    "allowJs": false,
+    "emitDeclarationOnly": true
+  }
 }
