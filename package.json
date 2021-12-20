@@ -17,7 +17,7 @@
     "type": "git",
     "url": "https://github.com/Xunnamius/named-app-errors"
   },
-  "license": "Unlicense",
+  "license": "MIT",
   "author": "Xunnamius",
   "sideEffects": false,
   "main": "dist/umd.js",
