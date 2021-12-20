@@ -1,6 +1,6 @@
 {
   "name": "named-app-errors",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "A handy set of \"named\" (i.e. in the stack trace) error classes with TypeScript support",
   "keywords": [
     "app",
