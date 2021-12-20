@@ -59,6 +59,7 @@ describe('::NotAuthorizedError', () => {
 
     expect(() => toss(new e.NotAuthorizedError())).toThrow('not authorized');
     expect(() => toss(new e.NotAuthorizedError('x'))).toThrow('x');
+    expect(() => toss(new e.NotAuthorizedError('x'))).toThrow('x');
   });
 });
 
@@ -80,6 +81,42 @@ describe('::HttpError', () => {
         } as unknown as ServerResponse)
       )
     ).toThrow('[HTTP 500] x');
+
+    expect(() =>
+      toss(
+        new e.HttpError(
+          {
+            statusCode: 500,
+            statusMessage: 'x'
+          } as unknown as ServerResponse,
+          'condition'
+        )
+      )
+    ).toThrow('[HTTP 500] condition');
+
+    expect(() =>
+      toss(
+        new e.HttpError(
+          {
+            statusCode: 500,
+            statusMessage: 'x'
+          } as unknown as ServerResponse,
+          'condition',
+          'z'
+        )
+      )
+    ).toThrow('z');
+  });
+
+  it('exposes expected public properties', async () => {
+    expect.hasAssertions();
+
+    const res = {
+      statusCode: 500,
+      statusMessage: 'x'
+    } as unknown as ServerResponse;
+
+    expect(new e.HttpError(res, 'x', 'y')).toHaveProperty('res', res);
   });
 });
 
@@ -106,6 +143,21 @@ describe('::ItemNotFoundError', () => {
     expect(() =>
       toss(new e.ItemNotFoundError({ constructor: { name: 'X' }, toString: () => 'x' }))
     ).toThrow('X "x" was not found');
+
+    expect(() =>
+      toss(
+        new e.ItemNotFoundError({ constructor: { name: 'X' }, toString: () => 'x' }, 'y')
+      )
+    ).toThrow('y "x" was not found');
+
+    expect(() => toss(new e.ItemNotFoundError('x', 'y', 'z'))).toThrow('z');
+  });
+
+  it('exposes expected public properties', async () => {
+    expect.hasAssertions();
+
+    expect(new e.ItemNotFoundError('a', 'x', 'y')).toHaveProperty('item', 'a');
+    expect(new e.ItemNotFoundError('a', 'x', 'y')).toHaveProperty('itemName', 'x');
   });
 });
 
@@ -147,6 +199,14 @@ describe('::InvalidConfigurationError', () => {
     expect(() => toss(new e.InvalidConfigurationError('x'))).toThrow(
       'invalid configuration: x'
     );
+
+    expect(() => toss(new e.InvalidConfigurationError('x', 'z'))).toThrow('z');
+  });
+
+  it('exposes expected public properties', async () => {
+    expect.hasAssertions();
+
+    expect(new e.InvalidConfigurationError('a', 'x')).toHaveProperty('details', 'a');
   });
 });
 
@@ -161,40 +221,53 @@ describe('::InvalidEnvironmentError', () => {
     expect(() => toss(new e.InvalidEnvironmentError('x'))).toThrow(
       'invalid runtime environment: x'
     );
+
+    expect(() => toss(new e.InvalidEnvironmentError('x', 'z'))).toThrow('z');
+  });
+
+  it('exposes expected public properties', async () => {
+    expect.hasAssertions();
+
+    expect(new e.InvalidEnvironmentError('a', 'x')).toHaveProperty('details', 'a');
   });
 });
 
-describe('::InvalidIdError', () => {
+describe('::InvalidItemError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.InvalidIdError())).toThrow('invalid id');
-    expect(() => toss(new e.InvalidIdError('x'))).toThrow('invalid id "x"');
+    expect(() => toss(new e.InvalidItemError())).toThrow('invalid id');
+    expect(() => toss(new e.InvalidItemError('x'))).toThrow('invalid id "x"');
+    expect(() => toss(new e.InvalidItemError('x', 'y'))).toThrow('invalid y "x"');
+    expect(() => toss(new e.InvalidItemError('a', 'x', 'y'))).toThrow('y');
+  });
+
+  it('exposes expected public properties', async () => {
+    expect.hasAssertions();
+
+    expect(new e.InvalidItemError('a', 'x', 'y')).toHaveProperty('item', 'a');
+    expect(new e.InvalidItemError('a', 'x', 'y')).toHaveProperty('itemName', 'x');
+    expect(new e.InvalidItemError()).toHaveProperty('itemName', 'id');
   });
 });
 
-describe('::InvalidParameterError', () => {
+describe('::InvalidSecretError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.InvalidParameterError())).toThrow('invalid parameter');
-    expect(() => toss(new e.InvalidParameterError('x'))).toThrow('invalid parameter: x');
-
-    expect(() => toss(new e.InvalidParameterError(['x', 'y']))).toThrow(
-      'invalid parameters: x, y'
+    expect(() => toss(new e.InvalidSecretError())).toThrow('invalid secret');
+    expect(() => toss(new e.InvalidSecretError('bearer token', 'x'))).toThrow('x');
+    expect(() => toss(new e.InvalidSecretError('bearer token'))).toThrow(
+      'invalid bearer token'
     );
-
-    expect(() => toss(new e.InvalidParameterError([]))).toThrow('invalid parameters');
-    expect(() => toss(new e.InvalidParameterError(''))).toThrow('invalid parameter');
   });
-});
 
-describe('::InvalidTokenError', () => {
-  it('instantiates as expected', () => {
+  it('exposes expected public properties', async () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.InvalidTokenError())).toThrow('invalid token');
-    // @ts-expect-error: InvalidTokenError should take no parameters
-    expect(() => toss(new e.InvalidTokenError('leaked-secret'))).toThrow('invalid token');
+    expect(new e.InvalidSecretError('bearer token')).toHaveProperty(
+      'secretType',
+      'bearer token'
+    );
   });
 });
