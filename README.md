@@ -44,15 +44,14 @@ makeNamedError(DeepCustomSpecialError, 'DeepCustomSpecialError');
 ```
 
 It might seem redundant to supply both the class object and a class name string,
-but it is necessary for the shiny new error name to survive destructive
-minification.
+but it is necessary for the shiny new error name to survive minification.
 
 Note that each constructor's parameter list ends with the `message?: string`
 parameter. Adhering to this pattern allows easy extension of your error classes.
 Additionally, the `public readonly`
 [parameter property](https://www.typescriptlang.org/docs/handbook/2/classes.html#parameter-properties)
 can be used to expose any extra constructor arguments. See
-`DeepCustomSpecialError` for an example.
+`DeepCustomSpecialError` below for an example.
 
 Afterwards, you can use your error classes like so:
 
@@ -70,8 +69,8 @@ try {
   }
 } catch (e) {
   if (e instanceof CustomSpecialError) { // ◄ Catches both custom error types
+    e.details && console.warn(e.details);
     externalLogger(e);
-    console.warn(e);
   } else if (e instanceof AppError) { // ◄ Catches any other AppError subtypes
     console.error(e);
   } else {
