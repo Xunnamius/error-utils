@@ -17,6 +17,10 @@ export class HttpError extends AppError {
   /**
    * Represents a generic HTTP or related failure.
    */
+  constructor(error?: string);
+  /**
+   * Represents a generic HTTP or related failure.
+   */
   constructor(res?: ServerResponseLike, error?: string);
   /**
    * This constructor syntax is used by subclasses when calling this constructor
@@ -24,14 +28,20 @@ export class HttpError extends AppError {
    */
   constructor(res: ServerResponseLike, error: string, message: string);
   constructor(
-    public readonly res: ServerResponseLike | undefined,
-    error: string | undefined,
+    public readonly res: ServerResponseLike | string | undefined,
+    error = '',
     message: string | undefined = undefined
   ) {
+    const resIsString = typeof res == 'string';
+
     if (message) {
       super(message);
-    } else if (!res) {
-      super('HTTP sub-request failed mysteriously');
+    } else if (!res || resIsString) {
+      if (error || resIsString) {
+        super(`HTTP failure: ${resIsString ? res : error}`);
+      } else {
+        super('HTTP failure');
+      }
     } else {
       super(
         `${

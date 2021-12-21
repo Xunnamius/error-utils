@@ -67,7 +67,14 @@ describe('::HttpError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.HttpError())).toThrow('HTTP sub-request failed mysteriously');
+    expect(() => toss(new e.HttpError())).toThrow('HTTP failure');
+    expect(() => toss(new e.HttpError('bad bad not good'))).toThrow(
+      'HTTP failure: bad bad not good'
+    );
+
+    expect(() => toss(new e.HttpError(undefined, 'bad bad not good'))).toThrow(
+      'HTTP failure: bad bad not good'
+    );
 
     expect(() => toss(new e.HttpError({ statusCode: 500, statusMessage: '' }))).toThrow(
       'sub-request failed [HTTP 500]'
