@@ -310,3 +310,15 @@ describe('::InvalidSecretError', () => {
     );
   });
 });
+
+describe('::NotImplementedError', () => {
+  it('instantiates as expected', () => {
+    expect.hasAssertions();
+
+    expect(() => toss(new e.NotImplementedError())).toThrow(
+      'unimplemented functionality'
+    );
+
+    expect(() => toss(new e.NotImplementedError('x'))).toThrow('x');
+  });
+});
