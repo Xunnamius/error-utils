@@ -303,8 +303,8 @@ DummyError(message?: string) extends TrialError
 ```
 
 `DummyError` is a generic pseudo-error meant to be thrown, caught, and consumed
-during exclusively within a testing environment to verify the correctness of
-error handling behavior.
+exclusively within a testing environment to verify the correctness of error
+handling behavior.
 
 #### Example
 
