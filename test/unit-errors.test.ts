@@ -168,6 +168,36 @@ describe('::NotFoundError', () => {
   });
 });
 
+describe('::ItemsNotFoundError', () => {
+  it('instantiates as expected', () => {
+    expect.hasAssertions();
+
+    expect(() => toss(new e.ItemsNotFoundError())).toThrow(
+      'one or more items were not found'
+    );
+
+    expect(() => toss(new e.ItemsNotFoundError('x'))).toThrow(
+      'one or more x were not found'
+    );
+
+    expect(() =>
+      toss(new e.ItemsNotFoundError({ constructor: undefined, toString: () => 'x' }))
+    ).toThrow('one or more x items were not found');
+
+    expect(() =>
+      toss(new e.ItemsNotFoundError({ constructor: { name: 'X' }, toString: () => 'x' }))
+    ).toThrow('one or more X items were not found');
+
+    expect(() => toss(new e.ItemsNotFoundError('x', 'y'))).toThrow('y');
+  });
+
+  it('exposes expected public properties', async () => {
+    expect.hasAssertions();
+
+    expect(new e.ItemsNotFoundError('a', 'x')).toHaveProperty('itemOrName', 'a');
+  });
+});
+
 describe('::ItemNotFoundError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();

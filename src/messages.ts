@@ -10,6 +10,7 @@ export const ErrorMessage = {
     `${error || 'sub-request failed'} [HTTP ${statusCode}]`,
   ItemNotFound: (item: unknown, itemName: string) =>
     item ? `${itemName} "${item}" was not found` : 'item was not found',
+  ItemOrItemsNotFound: (itemsName: string) => `one or more ${itemsName} were not found`,
   GuruMeditation: () => 'an impossible scenario occurred',
   NotImplemented: () => 'attempted to invoke unimplemented functionality',
   InvalidConfiguration: (details: string) =>
