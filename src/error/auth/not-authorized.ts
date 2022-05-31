@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../messages';
 import { makeNamedError } from '../../make-named-error';
 import { AuthError } from './auth';
 
@@ -6,7 +7,7 @@ import { AuthError } from './auth';
  */
 export class NotAuthorizedError extends AuthError {
   constructor(message?: string) {
-    super(message ?? 'not authorized');
+    super(message ?? ErrorMessage.NotAuthorized());
   }
 }
 makeNamedError(NotAuthorizedError, 'NotAuthorizedError');

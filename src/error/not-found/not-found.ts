@@ -5,6 +5,9 @@ import { AppError } from '../app';
  * Represents a failure to locate an item or resource.
  */
 export class NotFoundError extends AppError {
+  /**
+   * Represents a failure to locate an item or resource.
+   */
   constructor(message?: string) {
     super(message ?? 'item or resource was not found');
   }

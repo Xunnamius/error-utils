@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../messages';
 import { makeNamedError } from '../make-named-error';
 import { AppError } from './index';
 
@@ -6,8 +7,12 @@ import { AppError } from './index';
  * condition.
  */
 export class GuruMeditationError extends AppError {
+  /**
+   * Represents a sanity check failure and/or the occurrence of an "impossible"
+   * condition.
+   */
   constructor(message?: string) {
-    super(message ?? 'an impossible scenario occurred');
+    super(message ?? ErrorMessage.GuruMeditation());
   }
 }
 makeNamedError(GuruMeditationError, 'GuruMeditationError');

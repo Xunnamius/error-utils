@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../messages';
 import { makeNamedError } from '../../make-named-error';
 import { ValidationError } from './validation';
 
@@ -20,7 +21,7 @@ export class InvalidSecretError extends ValidationError {
     public readonly secretType: string,
     message: string | undefined = undefined
   ) {
-    super(message ?? `invalid ${secretType ?? 'secret'}`);
+    super(message ?? ErrorMessage.InvalidSecret(secretType));
   }
 }
 makeNamedError(InvalidSecretError, 'InvalidSecretError');

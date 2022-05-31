@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../messages';
 import { makeNamedError } from '../../make-named-error';
 import { ValidationError } from './validation';
 
@@ -19,7 +20,7 @@ export class InvalidItemError<T = undefined> extends ValidationError {
     public readonly itemName = 'id',
     message: string | undefined = undefined
   ) {
-    super(message ?? `invalid ${itemName}${item ? ` "${item}"` : ''}`);
+    super(message ?? ErrorMessage.InvalidItem(item, itemName));
   }
 }
 makeNamedError(InvalidItemError, 'InvalidItemError');

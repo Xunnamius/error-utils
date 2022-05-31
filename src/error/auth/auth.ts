@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../messages';
 import { makeNamedError } from '../../make-named-error';
 import { AppError } from '../app';
 
@@ -6,7 +7,7 @@ import { AppError } from '../app';
  */
 export class AuthError extends AppError {
   constructor(message?: string) {
-    super(message ?? 'auth failed');
+    super(message ?? ErrorMessage.AuthFailure());
   }
 }
 makeNamedError(AuthError, 'AuthError');

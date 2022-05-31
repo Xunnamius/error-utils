@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../messages';
 import { makeNamedError } from '../../make-named-error';
 import { AppError } from '../app';
 
@@ -38,17 +39,16 @@ export class HttpError extends AppError {
       super(message);
     } else if (!res || resIsString) {
       if (error || resIsString) {
-        super(`HTTP failure: ${resIsString ? res : error}`);
+        super(ErrorMessage.HttpFailure(resIsString ? res : error));
       } else {
-        super('HTTP failure');
+        super(ErrorMessage.HttpFailure());
       }
     } else {
       super(
-        `${
-          error ||
-          (isResponseShapeA(res) ? res.statusMessage : res.statusText) ||
-          'sub-request failed'
-        } [HTTP ${isResponseShapeA(res) ? res.statusCode : res.status}]`
+        ErrorMessage.HttpSubFailure(
+          error || (isResponseShapeA(res) ? res.statusMessage : res.statusText) || null,
+          isResponseShapeA(res) ? res.statusCode : res.status
+        )
       );
     }
   }

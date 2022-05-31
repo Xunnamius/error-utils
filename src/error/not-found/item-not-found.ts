@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../messages';
 import { makeNamedError } from '../../make-named-error';
 import { NotFoundError } from './not-found';
 
@@ -28,9 +29,7 @@ export class ItemNotFoundError<T = unknown> extends NotFoundError {
           : 'item';
     }
 
-    super(
-      message ?? (item ? `${itemName} "${item}" was not found` : 'item was not found')
-    );
+    super(message ?? ErrorMessage.ItemNotFound(item, itemName));
   }
 }
 makeNamedError(ItemNotFoundError, 'ItemNotFoundError');

@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../messages';
 import { makeNamedError } from '../../make-named-error';
 import { ValidationError } from './validation';
 
@@ -15,7 +16,7 @@ export class InvalidConfigurationError extends ValidationError {
    */
   constructor(details: string, message: string);
   constructor(public readonly details: string, message: string | undefined = undefined) {
-    super(message ?? 'invalid configuration' + (details ? `: ${details}` : ''));
+    super(message ?? ErrorMessage.InvalidConfiguration(details));
   }
 }
 makeNamedError(InvalidConfigurationError, 'InvalidConfigurationError');
