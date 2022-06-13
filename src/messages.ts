@@ -13,12 +13,16 @@ export const ErrorMessage = {
   ItemOrItemsNotFound: (itemsName: string) => `one or more ${itemsName} were not found`,
   GuruMeditation: () => 'an impossible scenario occurred',
   NotImplemented: () => 'attempted to invoke unimplemented functionality',
-  InvalidConfiguration: (details: string) =>
-    `invalid configuration${details ? `: ${details}` : ''}`,
-  InvalidEnvironment: (details: string) =>
+  InvalidAppConfiguration: (details?: string) =>
+    `invalid application configuration${details ? `: ${details}` : ''}`,
+  InvalidAppEnvironment: (details?: string) =>
     `invalid runtime environment${details ? `: ${details}` : ''}`,
+  InvalidClientConfiguration: (details?: string) =>
+    `invalid client configuration${details ? `: ${details}` : ''}`,
   InvalidItem: (item: unknown, itemName: string) =>
     `invalid ${itemName}${item ? ` "${item}"` : ''}`,
   InvalidSecret: (secretType: string) => `invalid ${secretType ?? 'secret'}`,
-  ValidationFailure: () => 'validation failed'
+  ValidationFailure: () => 'validation failed',
+  AppValidationFailure: () => 'validation of application data failed',
+  ClientValidationFailure: () => 'validation of client data failed'
 };

@@ -99,10 +99,13 @@ This library comes with the following error types built in:
   - [TrialError](#trialerror)
     - [DummyError](#dummyerror)
   - [ValidationError](#validationerror)
-    - [InvalidConfigurationError](#invalidconfigurationerror)
-    - [InvalidEnvironmentError](#invalidenvironmenterror)
-    - [InvalidItemError](#invaliditemerror)
-    - [InvalidSecretError](#invalidsecreterror)
+    - [AppValidationError](#appvalidationerror)
+      - [InvalidAppConfigurationError](#invalidappconfigurationerror)
+      - [InvalidAppEnvironmentError](#invalidappenvironmenterror)
+    - [ClientValidationError](#clientvalidationerror)
+      - [InvalidClientConfigurationError](#invalidclientconfigurationerror)
+      - [InvalidItemError](#invaliditemerror)
+      - [InvalidSecretError](#invalidsecreterror)
 
 ### AppError
 
@@ -335,40 +338,94 @@ import { ValidationError } from 'named-app-errors';
 throw new ValidationError('invalid data received');
 ```
 
-### InvalidConfigurationError
+### AppValidationError
 
 ```TypeScript
-InvalidConfigurationError(
-  public readonly details?: string
-) extends ValidationError
+AppValidationError(message?: string) extends ValidationError
 ```
 
-`InvalidConfigurationError` represents a user-provided misconfiguration.
+`AppValidationError` represents a generic validation failure outside of the
+user's control.
 
 #### Example
 
 ```TypeScript
-import { InvalidConfigurationError } from 'named-app-errors';
+import { AppValidationError } from 'named-app-errors';
 
-throw new InvalidConfigurationError('config at "./myapp.config.js" is invalid');
+throw new AppValidationError('invalid application data');
 ```
 
-### InvalidEnvironmentError
+### InvalidAppConfigurationError
 
 ```TypeScript
-InvalidEnvironmentError(
+InvalidAppConfigurationError(
   public readonly details?: string
-) extends ValidationError
+) extends AppValidationError
 ```
 
-`InvalidEnvironmentError` represents a misconfigured runtime environment.
+`InvalidAppConfigurationError` represents an application misconfiguration
+outside of the user's control.
 
 #### Example
 
 ```TypeScript
-import { InvalidEnvironmentError } from 'named-app-errors';
+import { InvalidAppConfigurationError } from 'named-app-errors';
 
-throw new InvalidEnvironmentError('missing NODE_ENV in process.env');
+throw new InvalidAppConfigurationError('config at "./myapp.config.js" is invalid');
+```
+
+### InvalidAppEnvironmentError
+
+```TypeScript
+InvalidAppEnvironmentError(
+  public readonly details?: string
+) extends AppValidationError
+```
+
+`InvalidAppEnvironmentError` represents a misconfigured runtime environment
+outside of the user's control.
+
+#### Example
+
+```TypeScript
+import { InvalidAppEnvironmentError } from 'named-app-errors';
+
+throw new InvalidAppEnvironmentError('missing NODE_ENV in process.env');
+```
+
+### ClientValidationError
+
+```TypeScript
+ClientValidationError(message?: string) extends ValidationError
+```
+
+`ClientValidationError` represents a generic validation failure due to user
+error.
+
+#### Example
+
+```TypeScript
+import { ClientValidationError } from 'named-app-errors';
+
+throw new ClientValidationError('invalid data received');
+```
+
+### InvalidClientConfigurationError
+
+```TypeScript
+InvalidClientConfigurationError(
+  public readonly details?: string
+) extends ClientValidationError
+```
+
+`InvalidClientConfigurationError` represents a user-provided misconfiguration.
+
+#### Example
+
+```TypeScript
+import { InvalidClientConfigurationError } from 'named-app-errors';
+
+throw new InvalidClientConfigurationError('client config is invalid');
 ```
 
 ### InvalidItemError
@@ -377,7 +434,7 @@ throw new InvalidEnvironmentError('missing NODE_ENV in process.env');
 InvalidItemError<T = undefined>(
   public readonly item?: T,
   public readonly itemName?: string = 'id'
-) extends ValidationError
+) extends ClientValidationError
 ```
 
 `InvalidItemError` represents encountering a specific invalid item.
@@ -401,7 +458,7 @@ try {
 ### InvalidSecretError
 
 ```TypeScript
-InvalidSecretError(secretType?: string) extends ValidationError
+InvalidSecretError(secretType?: string) extends ClientValidationError
 ```
 
 `InvalidSecretError` represents a failure while validating credentials, key

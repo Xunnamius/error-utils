@@ -1,15 +1,15 @@
-import { ErrorMessage } from '../../messages';
-import { makeNamedError } from '../../make-named-error';
-import { ValidationError } from './validation';
+import { ErrorMessage } from '../../../messages';
+import { makeNamedError } from '../../../make-named-error';
+import { ClientValidationError } from './client-validation';
 
 /**
  * Represents encountering invalid or illegal credentials, key material, some
- * token, or other secret data.
+ * token, or other secret data provided by the user.
  */
-export class InvalidSecretError extends ValidationError {
+export class InvalidSecretError extends ClientValidationError {
   /**
    * Represents encountering invalid or illegal credentials, key material, some
-   * token, or other secret data.
+   * token, or other secret data provided by the user.
    */
   constructor(secretType?: string);
   /**
