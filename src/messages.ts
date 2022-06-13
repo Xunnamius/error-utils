@@ -8,6 +8,7 @@ export const ErrorMessage = {
   HttpFailure: (error?: string) => `HTTP failure${error ? `: ${error}` : ''}`,
   HttpSubFailure: (error: string | null, statusCode: number) =>
     `${error || 'sub-request failed'} [HTTP ${statusCode}]`,
+  NotFound: () => 'item or resource was not found',
   ItemNotFound: (item: unknown, itemName: string) =>
     item ? `${itemName} "${item}" was not found` : 'item was not found',
   ItemOrItemsNotFound: (itemsName: string) => `one or more ${itemsName} were not found`,

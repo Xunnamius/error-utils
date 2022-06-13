@@ -1,4 +1,5 @@
 import { makeNamedError } from '../../make-named-error';
+import { ErrorMessage } from '../../messages';
 import { AppError } from '../app';
 
 /**
@@ -9,7 +10,7 @@ export class NotFoundError extends AppError {
    * Represents a failure to locate an item or resource.
    */
   constructor(message?: string) {
-    super(message ?? 'item or resource was not found');
+    super(message ?? ErrorMessage.NotFound());
   }
 }
 makeNamedError(NotFoundError, 'NotFoundError');
