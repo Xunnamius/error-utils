@@ -1,4 +1,5 @@
 import * as e from '../src/index';
+import { ErrorMessage } from '../src/index';
 import { toss } from 'toss-expression';
 
 import type { ServerResponse } from 'http';
@@ -28,7 +29,7 @@ describe('::GuruMeditationError', () => {
     expect.hasAssertions();
 
     expect(() => toss(new e.GuruMeditationError())).toThrow(
-      'an impossible scenario occurred'
+      ErrorMessage.GuruMeditation()
     );
 
     expect(() => toss(new e.GuruMeditationError('x'))).toThrow('x');
@@ -39,7 +40,7 @@ describe('::AuthError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.AuthError())).toThrow('auth failed');
+    expect(() => toss(new e.AuthError())).toThrow(ErrorMessage.AuthFailure());
     expect(() => toss(new e.AuthError('x'))).toThrow('x');
   });
 });
@@ -48,7 +49,9 @@ describe('::NotAuthenticatedError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.NotAuthenticatedError())).toThrow('not authenticated');
+    expect(() => toss(new e.NotAuthenticatedError())).toThrow(
+      ErrorMessage.NotAuthenticated()
+    );
     expect(() => toss(new e.NotAuthenticatedError('x'))).toThrow('x');
   });
 });
@@ -57,7 +60,7 @@ describe('::NotAuthorizedError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.NotAuthorizedError())).toThrow('not authorized');
+    expect(() => toss(new e.NotAuthorizedError())).toThrow(ErrorMessage.NotAuthorized());
     expect(() => toss(new e.NotAuthorizedError('x'))).toThrow('x');
     expect(() => toss(new e.NotAuthorizedError('x'))).toThrow('x');
   });
@@ -67,7 +70,7 @@ describe('::HttpError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.HttpError())).toThrow('HTTP failure');
+    expect(() => toss(new e.HttpError())).toThrow(ErrorMessage.HttpFailure());
     expect(() => toss(new e.HttpError('bad bad not good'))).toThrow(
       'HTTP failure: bad bad not good'
     );
@@ -77,11 +80,11 @@ describe('::HttpError', () => {
     );
 
     expect(() => toss(new e.HttpError({ statusCode: 500, statusMessage: '' }))).toThrow(
-      'sub-request failed [HTTP 500]'
+      ErrorMessage.HttpSubFailure(null, 500)
     );
 
     expect(() => toss(new e.HttpError({ status: 500, statusText: '' }))).toThrow(
-      'sub-request failed [HTTP 500]'
+      ErrorMessage.HttpSubFailure(null, 500)
     );
 
     expect(() =>
@@ -91,7 +94,7 @@ describe('::HttpError', () => {
           statusMessage: 'x'
         })
       )
-    ).toThrow('x [HTTP 500]');
+    ).toThrow(ErrorMessage.HttpSubFailure('x', 500));
 
     expect(() =>
       toss(
@@ -100,7 +103,7 @@ describe('::HttpError', () => {
           statusText: 'x'
         })
       )
-    ).toThrow('x [HTTP 500]');
+    ).toThrow(ErrorMessage.HttpSubFailure('x', 500));
 
     expect(() =>
       toss(
@@ -112,7 +115,7 @@ describe('::HttpError', () => {
           'condition'
         )
       )
-    ).toThrow('condition [HTTP 500]');
+    ).toThrow(ErrorMessage.HttpSubFailure('condition', 500));
 
     expect(() =>
       toss(
@@ -124,7 +127,7 @@ describe('::HttpError', () => {
           'condition'
         )
       )
-    ).toThrow('condition [HTTP 500]');
+    ).toThrow(ErrorMessage.HttpSubFailure('condition', 500));
 
     expect(() =>
       toss(
@@ -163,7 +166,7 @@ describe('::NotFoundError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.NotFoundError())).toThrow('item or resource was not found');
+    expect(() => toss(new e.NotFoundError())).toThrow(ErrorMessage.NotFound());
     expect(() => toss(new e.NotFoundError('x'))).toThrow('x');
   });
 });
@@ -173,20 +176,20 @@ describe('::ItemsNotFoundError', () => {
     expect.hasAssertions();
 
     expect(() => toss(new e.ItemsNotFoundError())).toThrow(
-      'one or more items were not found'
+      ErrorMessage.ItemOrItemsNotFound('items')
     );
 
     expect(() => toss(new e.ItemsNotFoundError('x'))).toThrow(
-      'one or more x were not found'
+      ErrorMessage.ItemOrItemsNotFound('x')
     );
 
     expect(() =>
       toss(new e.ItemsNotFoundError({ constructor: undefined, toString: () => 'x' }))
-    ).toThrow('one or more x items were not found');
+    ).toThrow(ErrorMessage.ItemOrItemsNotFound('x items'));
 
     expect(() =>
       toss(new e.ItemsNotFoundError({ constructor: { name: 'X' }, toString: () => 'x' }))
-    ).toThrow('one or more X items were not found');
+    ).toThrow(ErrorMessage.ItemOrItemsNotFound('X items'));
 
     expect(() => toss(new e.ItemsNotFoundError('x', 'y'))).toThrow('y');
   });
@@ -202,22 +205,27 @@ describe('::ItemNotFoundError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.ItemNotFoundError())).toThrow('item was not found');
-    expect(() => toss(new e.ItemNotFoundError('x'))).toThrow('item "x" was not found');
+    expect(() => toss(new e.ItemNotFoundError())).toThrow(
+      ErrorMessage.ItemNotFound(undefined, 'item')
+    );
+
+    expect(() => toss(new e.ItemNotFoundError('x'))).toThrow(
+      ErrorMessage.ItemNotFound('x', 'item')
+    );
 
     expect(() =>
       toss(new e.ItemNotFoundError({ constructor: undefined, toString: () => 'x' }))
-    ).toThrow('item "x" was not found');
+    ).toThrow(ErrorMessage.ItemNotFound('x', 'item'));
 
     expect(() =>
       toss(new e.ItemNotFoundError({ constructor: { name: 'X' }, toString: () => 'x' }))
-    ).toThrow('X "x" was not found');
+    ).toThrow(ErrorMessage.ItemNotFound('x', 'X'));
 
     expect(() =>
       toss(
         new e.ItemNotFoundError({ constructor: { name: 'X' }, toString: () => 'x' }, 'y')
       )
-    ).toThrow('y "x" was not found');
+    ).toThrow(ErrorMessage.ItemNotFound('x', 'y'));
 
     expect(() => toss(new e.ItemNotFoundError('x', 'y', 'z'))).toThrow('z');
   });
@@ -252,52 +260,99 @@ describe('::ValidationError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.ValidationError())).toThrow('validation failed');
+    expect(() => toss(new e.ValidationError())).toThrow(ErrorMessage.ValidationFailure());
     expect(() => toss(new e.ValidationError('x'))).toThrow('x');
   });
 });
 
-describe('::InvalidConfigurationError', () => {
+describe('::AppValidationError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.InvalidConfigurationError())).toThrow(
-      'invalid configuration'
+    expect(() => toss(new e.AppValidationError())).toThrow(
+      ErrorMessage.AppValidationFailure()
     );
-
-    expect(() => toss(new e.InvalidConfigurationError('x'))).toThrow(
-      'invalid configuration: x'
-    );
-
-    expect(() => toss(new e.InvalidConfigurationError('x', 'z'))).toThrow('z');
-  });
-
-  it('exposes expected public properties', async () => {
-    expect.hasAssertions();
-
-    expect(new e.InvalidConfigurationError('a', 'x')).toHaveProperty('details', 'a');
+    expect(() => toss(new e.AppValidationError('x'))).toThrow('x');
   });
 });
 
-describe('::InvalidEnvironmentError', () => {
+describe('::InvalidAppConfigurationError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.InvalidEnvironmentError())).toThrow(
-      'invalid runtime environment'
+    expect(() => toss(new e.InvalidAppConfigurationError())).toThrow(
+      ErrorMessage.InvalidAppConfiguration()
     );
 
-    expect(() => toss(new e.InvalidEnvironmentError('x'))).toThrow(
-      'invalid runtime environment: x'
+    expect(() => toss(new e.InvalidAppConfigurationError('x'))).toThrow(
+      ErrorMessage.InvalidAppConfiguration('x')
     );
 
-    expect(() => toss(new e.InvalidEnvironmentError('x', 'z'))).toThrow('z');
+    expect(() => toss(new e.InvalidAppConfigurationError('x', 'z'))).toThrow('z');
   });
 
   it('exposes expected public properties', async () => {
     expect.hasAssertions();
 
-    expect(new e.InvalidEnvironmentError('a', 'x')).toHaveProperty('details', 'a');
+    expect(new e.InvalidAppConfigurationError('a', 'x')).toHaveProperty('details', 'a');
+  });
+});
+
+describe('::InvalidAppEnvironmentError', () => {
+  it('instantiates as expected', () => {
+    expect.hasAssertions();
+
+    expect(() => toss(new e.InvalidAppEnvironmentError())).toThrow(
+      ErrorMessage.InvalidAppEnvironment()
+    );
+
+    expect(() => toss(new e.InvalidAppEnvironmentError('x'))).toThrow(
+      ErrorMessage.InvalidAppEnvironment('x')
+    );
+
+    expect(() => toss(new e.InvalidAppEnvironmentError('x', 'z'))).toThrow('z');
+  });
+
+  it('exposes expected public properties', async () => {
+    expect.hasAssertions();
+
+    expect(new e.InvalidAppEnvironmentError('a', 'x')).toHaveProperty('details', 'a');
+  });
+});
+
+describe('::ClientValidationError', () => {
+  it('instantiates as expected', () => {
+    expect.hasAssertions();
+
+    expect(() => toss(new e.ClientValidationError())).toThrow(
+      ErrorMessage.ClientValidationFailure()
+    );
+    expect(() => toss(new e.ClientValidationError('x'))).toThrow('x');
+  });
+});
+
+describe('::InvalidClientConfigurationError', () => {
+  it('instantiates as expected', () => {
+    expect.hasAssertions();
+
+    expect(() => toss(new e.InvalidClientConfigurationError())).toThrow(
+      ErrorMessage.InvalidClientConfiguration()
+    );
+
+    expect(() => toss(new e.InvalidClientConfigurationError('x'))).toThrow(
+      ErrorMessage.InvalidClientConfiguration('x')
+    );
+
+    expect(() => toss(new e.InvalidClientConfigurationError('x', 'z'))).toThrow('z');
+  });
+
+  it('exposes expected public properties', async () => {
+    expect.hasAssertions();
+
+    expect(new e.InvalidClientConfigurationError('a', 'x')).toHaveProperty(
+      'details',
+      'a'
+    );
   });
 });
 
@@ -305,9 +360,18 @@ describe('::InvalidItemError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.InvalidItemError())).toThrow('invalid id');
-    expect(() => toss(new e.InvalidItemError('x'))).toThrow('invalid id "x"');
-    expect(() => toss(new e.InvalidItemError('x', 'y'))).toThrow('invalid y "x"');
+    expect(() => toss(new e.InvalidItemError())).toThrow(
+      ErrorMessage.InvalidItem(undefined, 'item')
+    );
+
+    expect(() => toss(new e.InvalidItemError('x'))).toThrow(
+      ErrorMessage.InvalidItem('x', 'item')
+    );
+
+    expect(() => toss(new e.InvalidItemError('x', 'y'))).toThrow(
+      ErrorMessage.InvalidItem('x', 'y')
+    );
+
     expect(() => toss(new e.InvalidItemError('a', 'x', 'y'))).toThrow('y');
   });
 
@@ -316,7 +380,7 @@ describe('::InvalidItemError', () => {
 
     expect(new e.InvalidItemError('a', 'x', 'y')).toHaveProperty('item', 'a');
     expect(new e.InvalidItemError('a', 'x', 'y')).toHaveProperty('itemName', 'x');
-    expect(new e.InvalidItemError()).toHaveProperty('itemName', 'id');
+    expect(new e.InvalidItemError()).toHaveProperty('itemName', 'item');
   });
 });
 
@@ -324,11 +388,15 @@ describe('::InvalidSecretError', () => {
   it('instantiates as expected', () => {
     expect.hasAssertions();
 
-    expect(() => toss(new e.InvalidSecretError())).toThrow('invalid secret');
-    expect(() => toss(new e.InvalidSecretError('bearer token', 'x'))).toThrow('x');
-    expect(() => toss(new e.InvalidSecretError('bearer token'))).toThrow(
-      'invalid bearer token'
+    expect(() => toss(new e.InvalidSecretError())).toThrow(
+      ErrorMessage.InvalidSecret('secret')
     );
+
+    expect(() => toss(new e.InvalidSecretError('bearer token'))).toThrow(
+      ErrorMessage.InvalidSecret('bearer token')
+    );
+
+    expect(() => toss(new e.InvalidSecretError('bearer token', 'x'))).toThrow('x');
   });
 
   it('exposes expected public properties', async () => {
@@ -346,7 +414,7 @@ describe('::NotImplementedError', () => {
     expect.hasAssertions();
 
     expect(() => toss(new e.NotImplementedError())).toThrow(
-      'unimplemented functionality'
+      ErrorMessage.NotImplemented()
     );
 
     expect(() => toss(new e.NotImplementedError('x'))).toThrow('x');
