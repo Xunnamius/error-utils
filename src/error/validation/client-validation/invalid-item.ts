@@ -17,6 +17,7 @@ export class InvalidItemError<T = undefined> extends ClientValidationError {
   constructor(item: T, itemName: string, message: string);
   constructor(
     public readonly item: T | undefined,
+    public readonly itemName = 'item',
     message: string | undefined = undefined
   ) {
     super(message ?? ErrorMessage.InvalidItem(item, itemName));
