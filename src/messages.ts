@@ -22,7 +22,8 @@ export const ErrorMessage = {
     `invalid client configuration${details !== undefined ? `: ${details}` : ''}`,
   InvalidItem: (item: unknown, itemName: string) =>
     `invalid ${itemName}${item !== undefined ? ` "${item}"` : ''}`,
-  InvalidSecret: (secretType: string) => `invalid ${secretType ?? 'secret'}`,
+  InvalidSecret: (secretType: string) =>
+    ErrorMessage.InvalidItem(undefined, secretType ?? 'secret'),
   ValidationFailure: () => 'validation failed',
   AppValidationFailure: () => 'validation of application data failed',
   ClientValidationFailure: () => 'validation of client data failed'
