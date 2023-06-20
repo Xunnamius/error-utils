@@ -15,13 +15,13 @@ export const ErrorMessage = {
   GuruMeditation: () => 'an impossible scenario occurred',
   NotImplemented: () => 'attempted to invoke unimplemented functionality',
   InvalidAppConfiguration: (details?: string) =>
-    `invalid application configuration${details ? `: ${details}` : ''}`,
+    `invalid application configuration${details !== undefined ? `: ${details}` : ''}`,
   InvalidAppEnvironment: (details?: string) =>
-    `invalid runtime environment${details ? `: ${details}` : ''}`,
+    `invalid runtime environment${details !== undefined ? `: ${details}` : ''}`,
   InvalidClientConfiguration: (details?: string) =>
-    `invalid client configuration${details ? `: ${details}` : ''}`,
+    `invalid client configuration${details !== undefined ? `: ${details}` : ''}`,
   InvalidItem: (item: unknown, itemName: string) =>
-    `invalid ${itemName}${item ? ` "${item}"` : ''}`,
+    `invalid ${itemName}${item !== undefined ? ` "${item}"` : ''}`,
   InvalidSecret: (secretType: string) => `invalid ${secretType ?? 'secret'}`,
   ValidationFailure: () => 'validation failed',
   AppValidationFailure: () => 'validation of application data failed',

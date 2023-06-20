@@ -25,7 +25,7 @@ When creating your own error classes, you should extend [AppError](#apperror)
 (or any of its descendants) and call the special `makeNamedError` method
 afterwards like so:
 
-```TypeScript
+```typescript
 import { AppError, makeNamedError } from 'named-app-errors';
 
 export class CustomSpecialError extends AppError {
@@ -59,7 +59,7 @@ can be used to expose any extra constructor arguments.
 
 Afterwards, you can use your error classes like so:
 
-```TypeScript
+```typescript
 import { AppError } from 'named-app-errors';
 // ...
 try {
@@ -109,7 +109,7 @@ This library comes with the following error types built in:
 
 ### AppError
 
-```TypeScript
+```typescript
 AppError(message?: string) extends Error
 ```
 
@@ -122,7 +122,7 @@ context.
 
 #### Example
 
-```TypeScript
+```typescript
 import { AppError } from 'named-app-errors';
 
 throw new AppError('badness');
@@ -130,7 +130,7 @@ throw new AppError('badness');
 
 ### AuthError
 
-```TypeScript
+```typescript
 AuthError(message?: string) extends AppError
 ```
 
@@ -138,7 +138,7 @@ AuthError(message?: string) extends AppError
 
 #### Example
 
-```TypeScript
+```typescript
 import { AuthError } from 'named-app-errors';
 
 throw new AuthError();
@@ -146,7 +146,7 @@ throw new AuthError();
 
 ### NotAuthenticatedError
 
-```TypeScript
+```typescript
 NotAuthenticatedError(message?: string) extends AuthError
 ```
 
@@ -154,7 +154,7 @@ NotAuthenticatedError(message?: string) extends AuthError
 
 #### Example
 
-```TypeScript
+```typescript
 import { NotAuthenticatedError } from 'named-app-errors';
 
 throw new NotAuthenticatedError();
@@ -162,7 +162,7 @@ throw new NotAuthenticatedError();
 
 ### NotAuthorizedError
 
-```TypeScript
+```typescript
 NotAuthorizedError(message?: string) extends AuthError
 ```
 
@@ -170,7 +170,7 @@ NotAuthorizedError(message?: string) extends AuthError
 
 #### Example
 
-```TypeScript
+```typescript
 import { NotAuthorizedError } from 'named-app-errors';
 
 throw new NotAuthorizedError();
@@ -178,7 +178,7 @@ throw new NotAuthorizedError();
 
 ### GuruMeditationError
 
-```TypeScript
+```typescript
 GuruMeditationError(message?: string) extends AppError
 ```
 
@@ -188,7 +188,7 @@ required to debug efficiently. Scary!
 
 #### Example
 
-```TypeScript
+```typescript
 import { GuruMeditationError } from 'named-app-errors';
 
 throw new GuruMeditationError();
@@ -196,7 +196,7 @@ throw new GuruMeditationError();
 
 ### HttpError
 
-```TypeScript
+```typescript
 HttpError(
   public readonly res?: ServerResponseLike,
   error?: string
@@ -208,7 +208,7 @@ HttpError(
 The `ServerResponseLike` type is compatible with response types from Node.js and
 most fetch libraries:
 
-```TypeScript
+```typescript
 type ResponseShapeA = { statusCode: number; statusMessage: string };
 type ResponseShapeB = { status: number; statusText: string };
 type ServerResponseLike = ResponseShapeA | ResponseShapeB;
@@ -216,7 +216,7 @@ type ServerResponseLike = ResponseShapeA | ResponseShapeB;
 
 #### Example
 
-```TypeScript
+```typescript
 import { HttpError } from 'named-app-errors';
 import { fetch } from 'node-fetch';
 
@@ -241,7 +241,7 @@ try {
 
 ### NotFoundError
 
-```TypeScript
+```typescript
 NotFoundError(message?: string) extends AppError
 ```
 
@@ -249,7 +249,7 @@ NotFoundError(message?: string) extends AppError
 
 #### Example
 
-```TypeScript
+```typescript
 import { NotFoundError } from 'named-app-errors';
 
 throw new NotFoundError('user');
@@ -257,7 +257,7 @@ throw new NotFoundError('user');
 
 ### ItemNotFoundError
 
-```TypeScript
+```typescript
 ItemNotFoundError<T = undefined>(
   public readonly item?: T,
   public readonly itemName?: string
@@ -268,7 +268,7 @@ ItemNotFoundError<T = undefined>(
 
 #### Example
 
-```TypeScript
+```typescript
 import { ItemNotFoundError } from 'named-app-errors';
 import { ObjectId } from 'mongodb';
 
@@ -282,7 +282,7 @@ throw new ItemNotFoundError(ref);
 
 ### TrialError
 
-```TypeScript
+```typescript
 TrialError(message?: string) extends AppError
 ```
 
@@ -291,7 +291,7 @@ running a test. This error should never appear outside of a testing environment.
 
 #### Example
 
-```TypeScript
+```typescript
 import { TrialError } from 'named-app-errors';
 
 jest.beforeAll(() => {
@@ -301,7 +301,7 @@ jest.beforeAll(() => {
 
 ### DummyError
 
-```TypeScript
+```typescript
 DummyError(message?: string) extends TrialError
 ```
 
@@ -311,7 +311,7 @@ handling behavior.
 
 #### Example
 
-```TypeScript
+```typescript
 import { DummyError } from 'named-app-errors';
 import { thingUnderTest } from './place';
 
@@ -324,7 +324,7 @@ it('handles errors properly', async () => {
 
 ### ValidationError
 
-```TypeScript
+```typescript
 ValidationError(message?: string) extends AppError
 ```
 
@@ -332,7 +332,7 @@ ValidationError(message?: string) extends AppError
 
 #### Example
 
-```TypeScript
+```typescript
 import { ValidationError } from 'named-app-errors';
 
 throw new ValidationError('invalid data received');
@@ -340,7 +340,7 @@ throw new ValidationError('invalid data received');
 
 ### AppValidationError
 
-```TypeScript
+```typescript
 AppValidationError(message?: string) extends ValidationError
 ```
 
@@ -349,7 +349,7 @@ user's control.
 
 #### Example
 
-```TypeScript
+```typescript
 import { AppValidationError } from 'named-app-errors';
 
 throw new AppValidationError('invalid application data');
@@ -357,7 +357,7 @@ throw new AppValidationError('invalid application data');
 
 ### InvalidAppConfigurationError
 
-```TypeScript
+```typescript
 InvalidAppConfigurationError(
   public readonly details?: string
 ) extends AppValidationError
@@ -368,7 +368,7 @@ outside of the user's control.
 
 #### Example
 
-```TypeScript
+```typescript
 import { InvalidAppConfigurationError } from 'named-app-errors';
 
 throw new InvalidAppConfigurationError('config at "./myapp.config.js" is invalid');
@@ -376,7 +376,7 @@ throw new InvalidAppConfigurationError('config at "./myapp.config.js" is invalid
 
 ### InvalidAppEnvironmentError
 
-```TypeScript
+```typescript
 InvalidAppEnvironmentError(
   public readonly details?: string
 ) extends AppValidationError
@@ -387,7 +387,7 @@ outside of the user's control.
 
 #### Example
 
-```TypeScript
+```typescript
 import { InvalidAppEnvironmentError } from 'named-app-errors';
 
 throw new InvalidAppEnvironmentError('missing NODE_ENV in process.env');
@@ -395,7 +395,7 @@ throw new InvalidAppEnvironmentError('missing NODE_ENV in process.env');
 
 ### ClientValidationError
 
-```TypeScript
+```typescript
 ClientValidationError(message?: string) extends ValidationError
 ```
 
@@ -404,7 +404,7 @@ error.
 
 #### Example
 
-```TypeScript
+```typescript
 import { ClientValidationError } from 'named-app-errors';
 
 throw new ClientValidationError('invalid data received');
@@ -412,7 +412,7 @@ throw new ClientValidationError('invalid data received');
 
 ### InvalidClientConfigurationError
 
-```TypeScript
+```typescript
 InvalidClientConfigurationError(
   public readonly details?: string
 ) extends ClientValidationError
@@ -422,7 +422,7 @@ InvalidClientConfigurationError(
 
 #### Example
 
-```TypeScript
+```typescript
 import { InvalidClientConfigurationError } from 'named-app-errors';
 
 throw new InvalidClientConfigurationError('client config is invalid');
@@ -430,7 +430,7 @@ throw new InvalidClientConfigurationError('client config is invalid');
 
 ### InvalidItemError
 
-```TypeScript
+```typescript
 InvalidItemError<T = undefined>(
   public readonly item?: T,
   public readonly itemName?: string = 'id'
@@ -441,7 +441,7 @@ InvalidItemError<T = undefined>(
 
 #### Example
 
-```TypeScript
+```typescript
 import { InvalidItemError } from 'named-app-errors';
 import { ObjectId } from 'mongodb';
 
@@ -457,7 +457,7 @@ try {
 
 ### InvalidSecretError
 
-```TypeScript
+```typescript
 InvalidSecretError(secretType?: string) extends ClientValidationError
 ```
 
@@ -465,7 +465,7 @@ InvalidSecretError(secretType?: string) extends ClientValidationError
 material, some token, or other sensitive data. This error does not reveal any
 additional information about the data or the error other than that it occurred.
 
-```TypeScript
+```typescript
 import { InvalidSecretError } from 'named-app-errors';
 
 const secret = ...
