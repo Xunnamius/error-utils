@@ -22,6 +22,7 @@
   "sideEffects": false,
   "exports": {
     ".": {
+      "types": "./dist/modules/index.d.ts",
       "import": "./dist/modules/index.js",
       "require": "./dist/umd.js",
       "default": "./dist/umd.js"
