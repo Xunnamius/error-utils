@@ -4,12 +4,12 @@ import { NotFoundError } from './not-found';
 
 /**
  * Represents a failure to locate a specific item or resource, optionally
- * represented by a string literal `name` or the item's constructor name.
+ * represented by a string literal `itemName` or the item's constructor name.
  */
 export class ItemNotFoundError<T = unknown> extends NotFoundError {
   /**
    * Represents a failure to locate a specific item or resource, optionally
-   * represented by a string literal `name` or the item's constructor name.
+   * represented by a string literal `itemName` or the item's constructor name.
    */
   constructor(item?: T, itemName?: string);
   /**
