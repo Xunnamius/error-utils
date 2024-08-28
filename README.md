@@ -1,6 +1,6 @@
 [![npm version](https://badge.fury.io/js/named-app-errors.svg)](https://badge.fury.io/js/named-app-errors)
 
-# named-app-errors
+# error-utils (@-xun/error)
 
 This package exports a set of \"named\" (i.e. in the stack trace) typed error
 classes extending the
