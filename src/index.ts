@@ -1,9 +1,14 @@
 import { ErrorMessage } from 'universe:error.ts';
 
-import type { LiteralUnknownUnion } from '@-xun/types';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyErrorClassConstructor = new (...args: any[]) => Error;
+
+// Error being a "constructor" (and class) at runtime but "an instance of Error"
+// to the type system simultaneously reminds me of C/C++ structs and what not :)
+export type SpecificErrorClassConstructor<ErrorInstance extends Error> = new (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ...args: any[]
+) => ErrorInstance;
 
 /**
  * An internal symbol used to track class metadata.
@@ -17,23 +22,21 @@ const lockedDownProperty = Object.freeze({
 });
 
 /**
- * Additional properties exposed by named error instances and as static
- * properties of their respective classes.
+ * Additional properties exposed as static properties of named error classes.
  */
-export type NamedErrorMixin<ErrorType extends Error> = {
+export type NamedErrorConstructorStaticProperties<ErrorConstructor extends Error> = {
   /**
-   * A reference to the `isX` function returned by {@link makeNamedError}.
+   * A reference to this class's `isX` function originally returned by
+   * {@link makeNamedError}.
    */
-  is: (parameter: unknown) => parameter is ErrorType;
+  isError: (parameter: unknown) => parameter is ErrorConstructor;
 };
 
 /**
- * Returns `true` if `parameter` is an instance of an {@link Error} subclass
+ * Returns `true` if `parameter` is _an instance of_ an {@link Error} subclass
  * created using {@link makeNamedError}.
  */
-export function isANamedErrorInstance(
-  parameter: unknown
-): parameter is Error & NamedErrorMixin<Error> {
+export function isANamedErrorInstance(parameter: unknown): parameter is Error {
   return (
     !!parameter &&
     typeof parameter === 'object' &&
@@ -43,15 +46,15 @@ export function isANamedErrorInstance(
 }
 
 /**
- * Returns `true` if `parameter` is a {@link Error} subclass created using
- * {@link makeNamedError}.
+ * Returns `true` if `parameter` is an {@link Error} subclass (_not an
+ * instance_) created using {@link makeNamedError}.
  *
  * **This function is NOT for match instances, but actual classes extending
  * {@link Error}!**
  */
 export function isANamedErrorClass(
   parameter: unknown
-): parameter is AnyErrorClassConstructor & NamedErrorMixin<Error> {
+): parameter is AnyErrorClassConstructor & NamedErrorConstructorStaticProperties<Error> {
   return (
     !!parameter &&
     typeof parameter === 'function' &&
@@ -77,17 +80,17 @@ export function isANamedErrorClass(
  * prototype chain for improved DX.
  */
 export function makeNamedError<
-  ErrorClassType extends AnyErrorClassConstructor,
+  ErrorClass extends AnyErrorClassConstructor,
   const Name extends string
 >(
-  ErrorClass: ErrorClassType,
+  ErrorClass: ErrorClass,
   name: Name
 ): { [key in `$kind_${Name}`]: symbol } & {
-  [key in Name]: ErrorClassType & NamedErrorMixin<InstanceType<ErrorClassType>>;
+  // ? We need to narrow ErrorClass for the benefit of .isError()
+  [key in Name]: SpecificErrorClassConstructor<InstanceType<ErrorClass>> &
+    NamedErrorConstructorStaticProperties<InstanceType<ErrorClass>>;
 } & {
-  [key in `is${Name}`]: (
-    parameter: LiteralUnknownUnion<AnyErrorClassConstructor>
-  ) => parameter is typeof ErrorClass;
+  [key in `is${Name}`]: (parameter: unknown) => parameter is InstanceType<ErrorClass>;
 } {
   const $specificKind = Symbol.for(`instance-kind-hint:${name}`);
   // ? This is an *instance* of ErrorClass's parent
@@ -133,8 +136,8 @@ export function makeNamedError<
   });
 
   // ? We do this so that nobody has to pass around a buncha isX functions
-  Object.defineProperty(ErrorClass, 'is', {
-    value: isX,
+  Object.defineProperty(ErrorClass, 'isError', {
+    value: isError,
     ...lockedDownProperty
   });
 
@@ -152,21 +155,14 @@ export function makeNamedError<
     ...lockedDownProperty
   });
 
-  // ? We do this so that nobody has to pass around a buncha isX functions
-  Object.defineProperty(prototypicalParentInstance, 'is', {
-    value: isX,
-    ...lockedDownProperty
-  });
-
   return {
     [`$kind_${name}`]: $specificKind,
     [name]: ErrorClass,
-    [`is${name}`]: isX
-  } as ReturnType<typeof makeNamedError<ErrorClassType, Name>>;
+    [`is${name}`]: isError
+  } as ReturnType<typeof makeNamedError<ErrorClass, Name>>;
 
-  function isX(
-    parameter: LiteralUnknownUnion<AnyErrorClassConstructor>
-  ): parameter is typeof ErrorClass {
+  type IsX = ReturnType<typeof makeNamedError>['isX'];
+  function isError(...[parameter]: Parameters<IsX>): ReturnType<IsX> {
     // eslint-disable-next-line no-restricted-syntax
     const isInstanceOf = parameter instanceof ErrorClass;
 

@@ -78,7 +78,7 @@ describe('::makeNamedError', () => {
     ).toBeTrue();
   });
 
-  it('returns isX function that returns false when passed non-instance type', async () => {
+  it('returns isError function that returns false when passed non-instance type', async () => {
     expect.hasAssertions();
 
     const { isMyError } = makeNamedError(class extends Error {}, 'MyError');
@@ -91,15 +91,15 @@ describe('::makeNamedError', () => {
     expect(isMyError(new Date())).toBeFalse();
   });
 
-  it('returns isX function as both static and prototypical property on error class', async () => {
+  it('returns isError function as both static and prototypical property on error class', async () => {
     expect.hasAssertions();
 
     const { MyError, isMyError } = makeNamedError(class extends Error {}, 'MyError');
 
-    expect(MyError.is).toBe(isMyError);
-    expect(MyError.is(Number.NaN)).toBeFalse();
-    expect(MyError.is(new Error())).toBeFalse();
-    expect(MyError.is(new MyError())).toBeTrue();
+    expect(MyError.isError).toBe(isMyError);
+    expect(MyError.isError(Number.NaN)).toBeFalse();
+    expect(MyError.isError(new Error())).toBeFalse();
+    expect(MyError.isError(new MyError())).toBeTrue();
   });
 
   it('can fall back to normal instanceof', async () => {
