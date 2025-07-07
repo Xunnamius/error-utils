@@ -8,7 +8,7 @@
 
 > **isANamedErrorInstance**(`parameter`): `parameter is NamedErrorWithKind<any>`
 
-Defined in: [src/index.ts:40](https://github.com/Xunnamius/named-app-errors/blob/bca08674e8fdf0223738d3e05200af58a786846b/src/index.ts#L40)
+Defined in: [src/index.ts:33](https://github.com/Xunnamius/named-app-errors/blob/c85fb8ef5ac55346f5ae735c31d49b3beed72bb9/src/index.ts#L33)
 
 Returns `true` if `parameter` is an instance of an Error subclass
 created using [makeNamedError](makeNamedError.md).
