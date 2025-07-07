@@ -6,9 +6,9 @@
 
 # Function: isANamedErrorInstance()
 
-> **isANamedErrorInstance**(`parameter`): `parameter is NamedErrorWithKind<any>`
+> **isANamedErrorInstance**(`parameter`): `parameter is Error & NamedErrorMixin<Error>`
 
-Defined in: [src/index.ts:33](https://github.com/Xunnamius/named-app-errors/blob/c85fb8ef5ac55346f5ae735c31d49b3beed72bb9/src/index.ts#L33)
+Defined in: [src/index.ts:34](https://github.com/Xunnamius/named-app-errors/blob/4a823a46c02f035232ca951b2f6cf9794b432b4e/src/index.ts#L34)
 
 Returns `true` if `parameter` is an instance of an Error subclass
 created using [makeNamedError](makeNamedError.md).
@@ -21,4 +21,4 @@ created using [makeNamedError](makeNamedError.md).
 
 ## Returns
 
-`parameter is NamedErrorWithKind<any>`
+`parameter is Error & NamedErrorMixin<Error>`

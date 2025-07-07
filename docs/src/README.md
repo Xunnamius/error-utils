@@ -6,9 +6,10 @@
 
 # src
 
-## Interfaces
+## Type Aliases
 
-- [NamedErrorWithKind](interfaces/NamedErrorWithKind.md)
+- [AnyErrorClassConstructor](type-aliases/AnyErrorClassConstructor.md)
+- [NamedErrorMixin](type-aliases/NamedErrorMixin.md)
 
 ## Variables
 
