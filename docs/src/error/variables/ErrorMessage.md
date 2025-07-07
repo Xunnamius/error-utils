@@ -8,7 +8,7 @@
 
 > `const` **ErrorMessage**: `object`
 
-Defined in: [src/error.ts:5](https://github.com/Xunnamius/named-app-errors/blob/6a1ce16534f6454b3aea0e5a08ffefddb249d41c/src/error.ts#L5)
+Defined in: [src/error.ts:5](https://github.com/Xunnamius/named-app-errors/blob/1196621ab846a2c42058bc4d3e2441e190f63506/src/error.ts#L5)
 
 A collection of possible error and warning messages.
 

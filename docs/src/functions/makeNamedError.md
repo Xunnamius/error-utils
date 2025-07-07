@@ -8,7 +8,7 @@
 
 > **makeNamedError**\<`ErrorClassType`, `Name`\>(`ErrorClass`, `name`): `` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: ErrorClassType }` & `` { [key in `is${string}`]: (parameter: LiteralUnknownUnion<(args: any[]) => Error>) => parameter is ErrorClassType } ``
 
-Defined in: [src/index.ts:29](https://github.com/Xunnamius/named-app-errors/blob/6a1ce16534f6454b3aea0e5a08ffefddb249d41c/src/index.ts#L29)
+Defined in: [src/index.ts:29](https://github.com/Xunnamius/named-app-errors/blob/1196621ab846a2c42058bc4d3e2441e190f63506/src/index.ts#L29)
 
 This function accepts a class extending Error and assigns it a name
 that will survive minification/transpilation, improving DX.
