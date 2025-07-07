@@ -29,7 +29,16 @@ const lockedDownProperty = {
 export function makeNamedError<
   ErrorClassType extends new (...args: any[]) => Error,
   const Name extends string
->(ErrorClass: ErrorClassType, name: Name) {
+>(
+  ErrorClass: ErrorClassType,
+  name: Name
+): { [key in `$kind_${Name}`]: symbol } & {
+  [key in Name]: ErrorClassType;
+} & {
+  [key in `is${Name}`]: (
+    parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
+  ) => parameter is typeof ErrorClass;
+} {
   const $specificKind = Symbol.for(`instance-kind-hint:${name}`);
   // ? This is an *instance* of ErrorClass's parent
   const prototypicalParentInstance = ErrorClass.prototype;
@@ -108,11 +117,5 @@ export function makeNamedError<
 
       return false;
     }
-  } as { [key in `$kind_${Name}`]: typeof $specificKind } & {
-    [key in Name]: ErrorClassType;
-  } & {
-    [key in `is${Name}`]: (
-      parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
-    ) => parameter is typeof ErrorClass;
-  };
+  } as ReturnType<typeof makeNamedError<ErrorClassType, Name>>;
 }
