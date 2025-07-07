@@ -6,7 +6,7 @@
 
 <p align="center" width="100%">
 <!-- symbiote-template-region-end -->
-Improved error handling safety, DX, and UX on error in JS
+TypeScript error handling DX/UX improvements capable of surviving minification.
 <!-- symbiote-template-region-start 2 -->
 </p>
 
@@ -31,8 +31,10 @@ Improved error handling safety, DX, and UX on error in JS
 
 <!-- symbiote-template-region-end -->
 
-Provides so-called named errors with the goal of improving overall error
-handling safety, DX, and UX on error.
+This tiny library provides so-called "named errors," which are normal [Error][1]
+classes (compatible with all JS runtimes) with some slight tweaks to improving
+overall handling safety, DX for the developers that work with them, and UX for
+the users that might encounter them.
 
 <!-- symbiote-template-region-start 3 -->
 
@@ -43,6 +45,7 @@ handling safety, DX, and UX on error.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Features](#features)
 - [Install](#install)
 - [Usage](#usage)
 - [Appendix](#appendix)
@@ -57,6 +60,154 @@ handling safety, DX, and UX on error.
 
 <br />
 
+## Features
+
+**Works via a [simple wrapper function][2] using normal ES6 class syntax**
+
+```typescript
+makeNamedError(
+  // Anonymous classes will be transformed into a named class by makeNamedError
+  class extends Error {
+    // ...
+  },
+  'MyCustomError'
+);
+
+makeNamedError(
+  // However, for improved DX in TypeScript, give your class definitions names
+  class MyCustomSubclassError extends MyCustomError {
+    // ...
+  },
+  'MyCustomSubclassError'
+);
+```
+
+**Makes error name available via prototypical instance and as a static class
+property**
+
+```typescript
+const { MyCustomError } = makeNamedError(/* ... */, 'MyCustomError');
+
+console.log(MyCustomError.name) // MyCustomError
+console.log((new MyCustomError()).name) // MyCustomError
+```
+
+**Ensures error class names in error messages and other outputs survive
+minification**
+
+```typescript
+const { MyCoolError } = makeNamedError(/* ... */, 'MyCoolError');
+
+console.log(MyCoolError.name) // MyCoolError (every time!)
+```
+
+**Provides built-in type guards that are safer and more powerful than
+`instanceof`**
+
+```typescript
+const { BigError, isBigError } = makeNamedError(/* ... */, 'BigError');
+
+console.log(isBigError(new BigError())) // true
+console.log(isBigError(new SomeOtherError())) // false
+console.log(isBigError(new Error())) // false
+```
+
+Each class's `isX` function is additionally provided as a static class property:
+
+```typescript
+const { BigError } = makeNamedError(/* ... */, 'BigError');
+
+console.log(BigError.isError(new BigError())); // true
+console.log(BigError.isError(new SomeOtherError())); // false
+console.log(BigError.isError(new Error())); // false
+```
+
+Unlike instanceof, this comparison is both [cross-realm safe][3] and safe to use
+in situations where multiple _distinct_ copies of your error classes might exist
+in the dependency tree (e.g. [dual package hazard][4]).
+
+In case of the latter, where [two different libraries might import two different
+versions of your error classes][5], this package takes away the pain:
+
+```typescript
+import lib1 from 'some-lib-exports-your-error';
+import lib2 from 'unrelated-lib-also-exports-same-error-but-not-strictly-equal';
+
+console.log(new lib1.YourError() instanceof lib2.YourError); // false
+console.log(lib2.YourError.isError(new lib1.YourError())); // true
+```
+
+**Supports inheritance** (both ES6 "extends" and pre-ES6 prototypical)
+
+```typescript
+const { AppError } = makeNamedError(
+  class extends Error {
+    panic() {
+      console.log('oh no!');
+      process.exit(123);
+    }
+  },
+  'AppError'
+);
+
+const { ValidationError } = makeNamedError(
+  // Note how ValidationError extends AppError
+  class extends AppError {
+    validationErrors: string[];
+
+    constructor(issues: string[]) {
+      super();
+      this.validationErrors = issues;
+    }
+
+    getValidationErrors() {
+      return validationErrors;
+    }
+  },
+  'ValidationError'
+);
+
+const error = new ValidationError(['validation error 1', 'validation error 2']);
+
+if (ValidationError.isError(error)) {
+  console.log('validation errors:', error.getValidationErrors().join(', '));
+  // validation errors: validation error 1, validation error 2
+}
+
+// Other logic...
+
+if (AppError.isError(error)) {
+  error.panic(); // This will run thanks to polymorphism and inheritance rules
+}
+
+// The program will die before reaching this point thanks to error.panic()
+```
+
+**Comes with kickass TypeScript types out of the box**
+
+```typescript
+import {
+  makeNamedError,
+  isANamedErrorClass,
+  isANamedErrorInstance
+} from '@-xun/error';
+
+const { SmallError, isSmallError } = makeNamedError(
+  /* ... */, // All class methods and properties are preserved as expected
+  'SmallError'
+);
+
+console.log(isANamedErrorClass(Error)); // false
+console.log(isANamedErrorInstance(new Error())); // false
+console.log(SmallError.isError(new Error())); // false
+console.log(isSmallError(new Error())); // false
+
+console.log(isANamedErrorClass(SmallError)); // true
+console.log(isANamedErrorInstance(new SmallError())); // true
+console.log(SmallError.isError(new SmallError())); // true
+console.log(isSmallError(new SmallError())); // true
+```
+
 ## Install
 
 <!-- symbiote-template-region-end -->
@@ -69,9 +220,56 @@ npm install @-xun/error
 
 ## Usage
 
-<!-- TODO -->
+Import:
 
-TODO
+```typescript
+import { makeNamedError } from '@-xun/error';
+```
+
+Optionally create a "root" error class from which the rest of your errors
+classes will descend:
+
+```typescript
+export const { AppError } = makeNamedError(
+  class AppError extends Error {},
+  'AppError'
+);
+```
+
+Create and export the rest of your custom error classes as you normally would:
+
+```typescript
+export const { ValidationError } = makeNamedError(
+  class ValidationError extends AppError {},
+  'ValidationError'
+);
+
+export const { AuthError } = makeNamedError(
+  class AuthError extends AppError {},
+  'AuthError'
+);
+
+export const { NotFoundError } = makeNamedError(
+  class NotFoundError extends AppError {},
+  'NotFoundError'
+);
+```
+
+Use your error classes like any other `Error` subclass (because they are):
+
+```typescript
+import { ValidationError } from './shared/errors.ts';
+
+// ...
+
+if (somethingBadHappened) {
+  throw new ValidationError();
+}
+
+// ...
+```
+
+Neat! 📸
 
 <!-- symbiote-template-region-start 5 -->
 
@@ -258,3 +456,10 @@ specification. Contributions of any kind welcome!
 [x-repo-pr-compare]: https://github.com/Xunnamius/error-utils/compare
 [x-repo-sponsor]: https://github.com/sponsors/Xunnamius
 [x-repo-support]: /.github/SUPPORT.md
+[1]:
+  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+[2]: #usage
+[3]:
+  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof#instanceof_and_multiple_realms
+[4]: https://github.com/GeoffreyBooth/dual-package-hazard
+[5]: https://github.com/isaacs/node-primordials/issues/3
