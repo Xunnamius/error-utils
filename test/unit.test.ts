@@ -31,8 +31,11 @@ describe('::makeNamedError', () => {
       isMyDoublyExtendedError
     } = makeNamedError(class extends MyExtendedError {}, 'MyDoublyExtendedError');
 
+    // @ts-expect-error: accessing $kind is discouraged by intellisense
     const kindMyError = MyError[$kind];
+    // @ts-expect-error: accessing $kind is discouraged by intellisense
     const kindMyExtendedError = MyExtendedError[$kind];
+    // @ts-expect-error: accessing $kind is discouraged by intellisense
     const kindMyDoublyExtendedError = MyDoublyExtendedError[$kind];
 
     expect(kindMyError).toStrictEqual([$kind_MyError]);

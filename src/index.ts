@@ -21,13 +21,6 @@ export interface NamedErrorWithKind<
   ErrorClassType extends new (...args: any[]) => Error
 > {
   /**
-   * Consider using the `.is()` function instead.
-   *
-   * @internal
-   * @deprecated
-   */
-  [$kind]: symbol[];
-  /**
    * A reference to the `isX` function returned by {@link makeNamedError}.
    */
   is: (parameter: unknown) => parameter is ErrorClassType;
@@ -177,7 +170,9 @@ export function makeNamedError<
     const isInstanceOf = parameter instanceof ErrorClass;
 
     if (isANamedErrorInstance(parameter)) {
-      const isMatchingKind = parameter[$kind].includes($specificKind);
+      const isMatchingKind = (parameter as unknown as { [$kind]: symbol[] })[
+        $kind
+      ].includes($specificKind);
 
       return isInstanceOf || isMatchingKind;
     }
