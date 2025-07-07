@@ -8,11 +8,67 @@ import type { LiteralUnknownUnion } from '@-xun/types';
  */
 export const $kind = Symbol.for('@-xun/error:instance-kind-hint');
 
-const lockedDownProperty = {
+const lockedDownProperty = Object.freeze({
   configurable: false,
   writable: false,
   enumerable: false
-};
+});
+
+/**
+ * The shape of a named error class and/or the instance of such a class.
+ */
+export interface NamedErrorWithKind<
+  ErrorClassType extends new (...args: any[]) => Error
+> {
+  /**
+   * Consider using the `.is()` function instead.
+   *
+   * @internal
+   * @deprecated
+   */
+  [$kind]: symbol[];
+  /**
+   * A reference to the `isX` function returned by {@link makeNamedError}.
+   */
+  is: (parameter: unknown) => parameter is ErrorClassType;
+}
+
+/**
+ * Returns `true` if `parameter` is an instance of an {@link Error} subclass
+ * created using {@link makeNamedError}.
+ */
+export function isANamedErrorInstance(
+  parameter: unknown
+): parameter is NamedErrorWithKind<any> {
+  return (
+    !!parameter &&
+    typeof parameter === 'object' &&
+    $kind in parameter &&
+    Array.isArray(parameter[$kind])
+  );
+}
+
+/**
+ * Returns `true` if `parameter` is a {@link Error} subclass created using
+ * {@link makeNamedError}.
+ *
+ * **This function is NOT for match instances, but actual classes extending
+ * {@link Error}!**
+ */
+export function isANamedErrorClass(
+  parameter: unknown
+): parameter is NamedErrorWithKind<any> {
+  return (
+    !!parameter &&
+    typeof parameter === 'function' &&
+    $kind in parameter &&
+    Array.isArray(parameter[$kind]) &&
+    'prototype' in parameter &&
+    isANamedErrorInstance(parameter.prototype) &&
+    'constructor' in parameter.prototype &&
+    parameter.prototype.constructor === parameter
+  );
+}
 
 /**
  * This function accepts a class extending {@link Error} and assigns it a name
@@ -33,7 +89,7 @@ export function makeNamedError<
   ErrorClass: ErrorClassType,
   name: Name
 ): { [key in `$kind_${Name}`]: symbol } & {
-  [key in Name]: ErrorClassType;
+  [key in Name]: ErrorClassType & NamedErrorWithKind<ErrorClassType>;
 } & {
   [key in `is${Name}`]: (
     parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
@@ -47,34 +103,6 @@ export function makeNamedError<
   if (!prototypicalParentInstance) {
     throw new Error(ErrorMessage.MissingPrototype(name));
   }
-
-  // ? We do this because minified/transpiled classes might lose their names
-  Object.defineProperty(ErrorClass, 'name', {
-    value: name,
-    ...lockedDownProperty,
-    // ? Preserve ES6 semantics
-    configurable: true
-  });
-
-  // ? We do this to keep track of inheritance statically on the class itself
-  Object.defineProperty(ErrorClass, $kind, {
-    value: ourKinds,
-    ...lockedDownProperty
-  });
-
-  // ? This is just for sugar purposes
-  Object.defineProperty(prototypicalParentInstance, 'name', {
-    value: name,
-    ...lockedDownProperty,
-    // ? Preserve ES6 semantics
-    configurable: true
-  });
-
-  // ? We do this to keep track of inheritance statically at the instance level
-  Object.defineProperty(prototypicalParentInstance, $kind, {
-    value: ourKinds,
-    ...lockedDownProperty
-  });
 
   const superKindProperty = Object.getPrototypeOf(ErrorClass)?.[$kind] as
     | symbol[]
@@ -96,26 +124,64 @@ export function makeNamedError<
     ourKinds.push(...superKindProperty);
   }
 
+  // ? We do this because minified/transpiled classes might lose their names
+  Object.defineProperty(ErrorClass, 'name', {
+    value: name,
+    ...lockedDownProperty,
+    // ? Preserve ES6 semantics
+    configurable: true
+  });
+
+  // ? We do this to keep track of inheritance statically on the class itself
+  Object.defineProperty(ErrorClass, $kind, {
+    value: ourKinds,
+    ...lockedDownProperty
+  });
+
+  // ? We do this so that nobody has to pass around a buncha isX functions
+  Object.defineProperty(ErrorClass, 'is', {
+    value: isX,
+    ...lockedDownProperty
+  });
+
+  // ? This is just for sugar purposes
+  Object.defineProperty(prototypicalParentInstance, 'name', {
+    value: name,
+    ...lockedDownProperty,
+    // ? Preserve ES6 semantics
+    configurable: true
+  });
+
+  // ? We do this to keep track of inheritance statically at the instance level
+  Object.defineProperty(prototypicalParentInstance, $kind, {
+    value: ourKinds,
+    ...lockedDownProperty
+  });
+
+  // ? We do this so that nobody has to pass around a buncha isX functions
+  Object.defineProperty(prototypicalParentInstance, 'is', {
+    value: isX,
+    ...lockedDownProperty
+  });
+
   return {
     [`$kind_${name}`]: $specificKind,
     [name]: ErrorClass,
-    [`is${name}`]: function (
-      parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
-    ): parameter is typeof ErrorClass {
-      if (parameter && typeof parameter === 'object') {
-        const castedParameter = parameter as unknown as { [$kind]: symbol[] };
-
-        // eslint-disable-next-line no-restricted-syntax
-        const isInstanceOf = parameter instanceof ErrorClass;
-        const isMatchingKind =
-          Object.getOwnPropertySymbols(parameter).includes($kind) &&
-          Array.isArray(castedParameter[$kind]) &&
-          castedParameter[$kind].includes($specificKind);
-
-        return isInstanceOf || isMatchingKind;
-      }
-
-      return false;
-    }
+    [`is${name}`]: isX
   } as ReturnType<typeof makeNamedError<ErrorClassType, Name>>;
+
+  function isX(
+    parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
+  ): parameter is typeof ErrorClass {
+    // eslint-disable-next-line no-restricted-syntax
+    const isInstanceOf = parameter instanceof ErrorClass;
+
+    if (isANamedErrorInstance(parameter)) {
+      const isMatchingKind = parameter[$kind].includes($specificKind);
+
+      return isInstanceOf || isMatchingKind;
+    }
+
+    return false;
+  }
 }

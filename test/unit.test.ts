@@ -2,7 +2,13 @@
 /* eslint-disable unicorn/error-message */
 // * These tests ensure the exported interfaces under test function as expected.
 
-import { $kind, makeNamedError } from 'universe';
+import {
+  $kind,
+  isANamedErrorClass,
+  isANamedErrorInstance,
+  makeNamedError
+} from 'universe';
+
 import { ErrorMessage } from 'universe:error.ts';
 
 describe('::makeNamedError', () => {
@@ -25,11 +31,8 @@ describe('::makeNamedError', () => {
       isMyDoublyExtendedError
     } = makeNamedError(class extends MyExtendedError {}, 'MyDoublyExtendedError');
 
-    // @ts-expect-error: this manner of access is discouraged via intellisense
     const kindMyError = MyError[$kind];
-    // @ts-expect-error: this manner of access is discouraged via intellisense
     const kindMyExtendedError = MyExtendedError[$kind];
-    // @ts-expect-error: this manner of access is discouraged via intellisense
     const kindMyDoublyExtendedError = MyDoublyExtendedError[$kind];
 
     expect(kindMyError).toStrictEqual([$kind_MyError]);
@@ -72,7 +75,7 @@ describe('::makeNamedError', () => {
     ).toBeTrue();
   });
 
-  it('returns false when isX function is passed a non-instance type', async () => {
+  it('returns isX function that returns false when passed non-instance type', async () => {
     expect.hasAssertions();
 
     const { isMyError } = makeNamedError(class extends Error {}, 'MyError');
@@ -85,12 +88,23 @@ describe('::makeNamedError', () => {
     expect(isMyError(new Date())).toBeFalse();
   });
 
+  it('returns isX function as both static and prototypical property on error class', async () => {
+    expect.hasAssertions();
+
+    const { MyError, isMyError } = makeNamedError(class extends Error {}, 'MyError');
+
+    expect(MyError.is).toBe(isMyError);
+    expect(MyError.is(Number.NaN)).toBeFalse();
+    expect(MyError.is(new Error())).toBeFalse();
+    expect(MyError.is(new MyError())).toBeTrue();
+  });
+
   it('can fall back to normal instanceof', async () => {
     expect.hasAssertions();
 
     const { MyError, isMyError } = makeNamedError(class extends Error {}, 'MyError');
 
-    // * Note how these classes are not Named Errors
+    // * Note how these classes are not named errors
     class MyErrorError extends MyError {}
 
     expect(isMyError(new MyErrorError())).toBeTrue();
@@ -128,5 +142,33 @@ describe('::makeNamedError', () => {
     expect(() => makeNamedError(Object.create(null), 'MyError')).toThrow(
       ErrorMessage.MissingPrototype('MyError')
     );
+  });
+});
+
+describe('::isANamedErrorInstance', () => {
+  it('returns true if and only if provided argument is an instance of a named error class', async () => {
+    expect.hasAssertions();
+
+    const { MyError } = makeNamedError(class extends Error {}, 'MyError');
+
+    expect(isANamedErrorInstance(MyError)).toBeFalse();
+    expect(isANamedErrorInstance(new MyError())).toBeTrue();
+
+    expect(isANamedErrorInstance(Error)).toBeFalse();
+    expect(isANamedErrorInstance(new Error())).toBeFalse();
+  });
+});
+
+describe('::isANamedErrorClass', () => {
+  it('returns true if and only if provided argument is a named error class', async () => {
+    expect.hasAssertions();
+
+    const { MyError } = makeNamedError(class extends Error {}, 'MyError');
+
+    expect(isANamedErrorClass(MyError)).toBeTrue();
+    expect(isANamedErrorClass(new MyError())).toBeFalse();
+
+    expect(isANamedErrorClass(Error)).toBeFalse();
+    expect(isANamedErrorClass(new Error())).toBeFalse();
   });
 });

@@ -31,7 +31,7 @@ Improved error handling safety, DX, and UX on error in JS
 
 <!-- symbiote-template-region-end -->
 
-Provides so-called Named Errors with the goal of improving overall error
+Provides so-called named errors with the goal of improving overall error
 handling safety, DX, and UX on error.
 
 <!-- symbiote-template-region-start 3 -->
