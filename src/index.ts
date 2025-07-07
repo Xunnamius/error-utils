@@ -26,13 +26,14 @@ const lockedDownProperty = {
  * Note that all errors will have a non-own "name" property injected into their
  * prototype chain for improved DX.
  */
-export function makeNamedError<ErrorClassType extends new (...args: any[]) => Error>(
-  ErrorClass: ErrorClassType,
-  name: string
-) {
+export function makeNamedError<
+  ErrorClassType extends new (...args: any[]) => Error,
+  const Name extends string
+>(ErrorClass: ErrorClassType, name: Name) {
   const $specificKind = Symbol.for(`instance-kind-hint:${name}`);
   // ? This is an *instance* of ErrorClass's parent
   const prototypicalParentInstance = ErrorClass.prototype;
+  const ourKinds: symbol[] = [$specificKind];
 
   if (!prototypicalParentInstance) {
     throw new Error(ErrorMessage.MissingPrototype(name));
@@ -48,7 +49,7 @@ export function makeNamedError<ErrorClassType extends new (...args: any[]) => Er
 
   // ? We do this to keep track of inheritance statically on the class itself
   Object.defineProperty(ErrorClass, $kind, {
-    value: [$specificKind],
+    value: ourKinds,
     ...lockedDownProperty
   });
 
@@ -62,7 +63,7 @@ export function makeNamedError<ErrorClassType extends new (...args: any[]) => Er
 
   // ? We do this to keep track of inheritance statically at the instance level
   Object.defineProperty(prototypicalParentInstance, $kind, {
-    value: [$specificKind],
+    value: ourKinds,
     ...lockedDownProperty
   });
 
@@ -70,13 +71,21 @@ export function makeNamedError<ErrorClassType extends new (...args: any[]) => Er
     | symbol[]
     | undefined;
 
+  const isMissingSuperKind =
+    !Array.isArray(superKindProperty) || !superKindProperty.length;
+
+  const isParentClassTheErrorClass =
+    Object.getPrototypeOf(prototypicalParentInstance)?.name === 'Error';
+
   // ? If superKindProperty isn't defined, and we're not dealing with the Error
   // ? class itself, then this is probably an incorrect use of this function
-  if (!Array.isArray(superKindProperty) || !superKindProperty.length) {
-    throw new Error(ErrorMessage.MissingSuperKind(name));
+  if (isMissingSuperKind) {
+    if (!isParentClassTheErrorClass) {
+      throw new Error(ErrorMessage.MissingSuperKind(name));
+    }
+  } else {
+    ourKinds.push(...superKindProperty);
   }
-
-  prototypicalParentInstance[$kind].push(...superKindProperty);
 
   return {
     [`$kind_${name}`]: $specificKind,
@@ -84,14 +93,26 @@ export function makeNamedError<ErrorClassType extends new (...args: any[]) => Er
     [`is${name}`]: function (
       parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
     ): parameter is typeof ErrorClass {
-      const castedParameter = parameter as unknown as { [$kind]: symbol[] };
+      if (parameter && typeof parameter === 'object') {
+        const castedParameter = parameter as unknown as { [$kind]: symbol[] };
 
-      return (
-        !!parameter &&
-        Object.getOwnPropertySymbols(parameter).includes($kind) &&
-        Array.isArray(castedParameter[$kind]) &&
-        castedParameter[$kind].includes($specificKind)
-      );
+        // eslint-disable-next-line no-restricted-syntax
+        const isInstanceOf = parameter instanceof ErrorClass;
+        const isMatchingKind =
+          Object.getOwnPropertySymbols(parameter).includes($kind) &&
+          Array.isArray(castedParameter[$kind]) &&
+          castedParameter[$kind].includes($specificKind);
+
+        return isInstanceOf || isMatchingKind;
+      }
+
+      return false;
     }
+  } as { [key in `$kind_${Name}`]: typeof $specificKind } & {
+    [key in Name]: ErrorClassType;
+  } & {
+    [key in `is${Name}`]: (
+      parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
+    ) => parameter is typeof ErrorClass;
   };
 }
