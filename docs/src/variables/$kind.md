@@ -8,6 +8,6 @@
 
 > `const` **$kind**: *typeof* `$kind`
 
-Defined in: [src/index.ts:9](https://github.com/Xunnamius/named-app-errors/blob/1196621ab846a2c42058bc4d3e2441e190f63506/src/index.ts#L9)
+Defined in: [src/index.ts:9](https://github.com/Xunnamius/named-app-errors/blob/bca08674e8fdf0223738d3e05200af58a786846b/src/index.ts#L9)
 
 An internal symbol used to track class metadata.

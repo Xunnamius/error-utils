@@ -6,9 +6,9 @@
 
 # Function: makeNamedError()
 
-> **makeNamedError**\<`ErrorClassType`, `Name`\>(`ErrorClass`, `name`): `` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: ErrorClassType }` & `` { [key in `is${string}`]: (parameter: LiteralUnknownUnion<(args: any[]) => Error>) => parameter is ErrorClassType } ``
+> **makeNamedError**\<`ErrorClassType`, `Name`\>(`ErrorClass`, `name`): `` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: ErrorClassType & NamedErrorWithKind<ErrorClassType> }` & `` { [key in `is${string}`]: (parameter: LiteralUnknownUnion<(args: any[]) => Error>) => parameter is ErrorClassType } ``
 
-Defined in: [src/index.ts:29](https://github.com/Xunnamius/named-app-errors/blob/1196621ab846a2c42058bc4d3e2441e190f63506/src/index.ts#L29)
+Defined in: [src/index.ts:85](https://github.com/Xunnamius/named-app-errors/blob/bca08674e8fdf0223738d3e05200af58a786846b/src/index.ts#L85)
 
 This function accepts a class extending Error and assigns it a name
 that will survive minification/transpilation, improving DX.
@@ -43,4 +43,4 @@ prototype chain for improved DX.
 
 ## Returns
 
-`` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: ErrorClassType }` & `` { [key in `is${string}`]: (parameter: LiteralUnknownUnion<(args: any[]) => Error>) => parameter is ErrorClassType } ``
+`` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: ErrorClassType & NamedErrorWithKind<ErrorClassType> }` & `` { [key in `is${string}`]: (parameter: LiteralUnknownUnion<(args: any[]) => Error>) => parameter is ErrorClassType } ``
