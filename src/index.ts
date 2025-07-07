@@ -1,7 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ErrorMessage } from 'universe:error.ts';
 
 import type { LiteralUnknownUnion } from '@-xun/types';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyErrorClassConstructor = new (...args: any[]) => Error;
 
 /**
  * An internal symbol used to track class metadata.
@@ -15,16 +17,15 @@ const lockedDownProperty = Object.freeze({
 });
 
 /**
- * The shape of a named error class and/or the instance of such a class.
+ * Additional properties exposed by named error instances and as static
+ * properties of their respective classes.
  */
-export interface NamedErrorWithKind<
-  ErrorClassType extends new (...args: any[]) => Error
-> {
+export type NamedErrorMixin<ErrorType extends Error> = {
   /**
    * A reference to the `isX` function returned by {@link makeNamedError}.
    */
-  is: (parameter: unknown) => parameter is ErrorClassType;
-}
+  is: (parameter: unknown) => parameter is ErrorType;
+};
 
 /**
  * Returns `true` if `parameter` is an instance of an {@link Error} subclass
@@ -32,7 +33,7 @@ export interface NamedErrorWithKind<
  */
 export function isANamedErrorInstance(
   parameter: unknown
-): parameter is NamedErrorWithKind<any> {
+): parameter is Error & NamedErrorMixin<Error> {
   return (
     !!parameter &&
     typeof parameter === 'object' &&
@@ -50,7 +51,7 @@ export function isANamedErrorInstance(
  */
 export function isANamedErrorClass(
   parameter: unknown
-): parameter is NamedErrorWithKind<any> {
+): parameter is AnyErrorClassConstructor & NamedErrorMixin<Error> {
   return (
     !!parameter &&
     typeof parameter === 'function' &&
@@ -76,16 +77,16 @@ export function isANamedErrorClass(
  * prototype chain for improved DX.
  */
 export function makeNamedError<
-  ErrorClassType extends new (...args: any[]) => Error,
+  ErrorClassType extends AnyErrorClassConstructor,
   const Name extends string
 >(
   ErrorClass: ErrorClassType,
   name: Name
 ): { [key in `$kind_${Name}`]: symbol } & {
-  [key in Name]: ErrorClassType & NamedErrorWithKind<ErrorClassType>;
+  [key in Name]: ErrorClassType & NamedErrorMixin<InstanceType<ErrorClassType>>;
 } & {
   [key in `is${Name}`]: (
-    parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
+    parameter: LiteralUnknownUnion<AnyErrorClassConstructor>
   ) => parameter is typeof ErrorClass;
 } {
   const $specificKind = Symbol.for(`instance-kind-hint:${name}`);
@@ -164,7 +165,7 @@ export function makeNamedError<
   } as ReturnType<typeof makeNamedError<ErrorClassType, Name>>;
 
   function isX(
-    parameter: LiteralUnknownUnion<new (...args: any[]) => Error>
+    parameter: LiteralUnknownUnion<AnyErrorClassConstructor>
   ): parameter is typeof ErrorClass {
     // eslint-disable-next-line no-restricted-syntax
     const isInstanceOf = parameter instanceof ErrorClass;
