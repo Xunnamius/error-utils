@@ -14,47 +14,62 @@ this project adheres to [Semantic Versioning][2].
 
 <br />
 
-### 🏗️ Patch @-xun/error[@1.1.2][5] (2025-07-07)
+### 🏗️ Patch @-xun/error[@1.1.3][5] (2025-07-08)
 
 #### 🪄 Fixes
 
-- Ensure `.is()` functions return proper types ([4a823a4][6])
+- Improve exported types ([7fb428a][6])
+
+#### ⚙️ Build System
+
+- **deps:** bump core-js from 3.43.0 to 3.44.0 ([7492eef][7])
 
 <br />
 
-### 🏗️ Patch @-xun/error[@1.1.1][7] (2025-07-07)
+### 🏗️ Patch @-xun/error[@1.1.2][8] (2025-07-07)
 
 #### 🪄 Fixes
 
-- Do not include internal symbols in exported types ([c85fb8e][8])
+- Ensure `.is()` functions return proper types ([4a823a4][9])
 
 <br />
 
-## @-xun/error[@1.0.0][9] (2025-07-07)
+### 🏗️ Patch @-xun/error[@1.1.1][10] (2025-07-07)
+
+#### 🪄 Fixes
+
+- Do not include internal symbols in exported types ([c85fb8e][11])
+
+<br />
+
+## @-xun/error[@1.0.0][12] (2025-07-07)
 
 ### ✨ Features
 
-- Implement kickass TS types ([3645a00][10])
-- **src:** implement `makeNamedError` ([8a40854][11])
+- Implement kickass TS types ([3645a00][13])
+- **src:** implement `makeNamedError` ([8a40854][14])
 
 ### 🪄 Fixes
 
-- **src:** add explicit return type to `makeNamedError` export ([60b9c5b][12])
+- **src:** add explicit return type to `makeNamedError` export ([60b9c5b][15])
 
 ### ⚙️ Build System
 
-- **package:** add missing dependencies ([6a1ce16][13])
+- **package:** add missing dependencies ([6a1ce16][16])
 
 [1]: https://conventionalcommits.org
 [2]: https://semver.org
 [3]: https://github.com/Xunnamius/error-utils/compare/@-xun/error@1.0.0...@-xun/error@1.1.0
 [4]: https://github.com/Xunnamius/error-utils/commit/bca08674e8fdf0223738d3e05200af58a786846b
-[5]: https://github.com/Xunnamius/error-utils/compare/@-xun/error@1.1.1...@-xun/error@1.1.2
-[6]: https://github.com/Xunnamius/error-utils/commit/4a823a46c02f035232ca951b2f6cf9794b432b4e
-[7]: https://github.com/Xunnamius/error-utils/compare/@-xun/error@1.1.0...@-xun/error@1.1.1
-[8]: https://github.com/Xunnamius/error-utils/commit/c85fb8ef5ac55346f5ae735c31d49b3beed72bb9
-[9]: https://github.com/Xunnamius/error-utils/compare/8a40854b72b00e6827c434a87ea2f43724a9a93e...@-xun/error@1.0.0
-[10]: https://github.com/Xunnamius/error-utils/commit/3645a003890bf82b80410706956fa69ae5d3cd82
-[11]: https://github.com/Xunnamius/error-utils/commit/8a40854b72b00e6827c434a87ea2f43724a9a93e
-[12]: https://github.com/Xunnamius/error-utils/commit/60b9c5be3b272b684fbf5d372f8c31d02bb079dc
-[13]: https://github.com/Xunnamius/error-utils/commit/6a1ce16534f6454b3aea0e5a08ffefddb249d41c
+[5]: https://github.com/Xunnamius/error-utils/compare/@-xun/error@1.1.2...@-xun/error@1.1.3
+[6]: https://github.com/Xunnamius/error-utils/commit/7fb428a0b54f8d199399d114d2dc8bfa2c95c299
+[7]: https://github.com/Xunnamius/error-utils/commit/7492eefa65641e20c76027d2ccafad36ca93f096
+[8]: https://github.com/Xunnamius/error-utils/compare/@-xun/error@1.1.1...@-xun/error@1.1.2
+[9]: https://github.com/Xunnamius/error-utils/commit/4a823a46c02f035232ca951b2f6cf9794b432b4e
+[10]: https://github.com/Xunnamius/error-utils/compare/@-xun/error@1.1.0...@-xun/error@1.1.1
+[11]: https://github.com/Xunnamius/error-utils/commit/c85fb8ef5ac55346f5ae735c31d49b3beed72bb9
+[12]: https://github.com/Xunnamius/error-utils/compare/8a40854b72b00e6827c434a87ea2f43724a9a93e...@-xun/error@1.0.0
+[13]: https://github.com/Xunnamius/error-utils/commit/3645a003890bf82b80410706956fa69ae5d3cd82
+[14]: https://github.com/Xunnamius/error-utils/commit/8a40854b72b00e6827c434a87ea2f43724a9a93e
+[15]: https://github.com/Xunnamius/error-utils/commit/60b9c5be3b272b684fbf5d372f8c31d02bb079dc
+[16]: https://github.com/Xunnamius/error-utils/commit/6a1ce16534f6454b3aea0e5a08ffefddb249d41c

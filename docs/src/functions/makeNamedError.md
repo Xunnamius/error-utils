@@ -6,9 +6,9 @@
 
 # Function: makeNamedError()
 
-> **makeNamedError**\<`ErrorClassType`, `Name`\>(`ErrorClass`, `name`): `` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: ErrorClassType & NamedErrorMixin<InstanceType<ErrorClassType>> }` & `` { [key in `is${string}`]: (parameter: LiteralUnknownUnion<AnyErrorClassConstructor>) => parameter is ErrorClassType } ``
+> **makeNamedError**\<`ErrorClass`, `Name`\>(`ErrorClass`, `name`): `` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: SpecificErrorClassConstructor<InstanceType<ErrorClass>> & NamedErrorConstructorStaticProperties<InstanceType<ErrorClass>> }` & `` { [key in `is${string}`]: (parameter: unknown) => parameter is InstanceType<ErrorClass> } ``
 
-Defined in: [src/index.ts:79](https://github.com/Xunnamius/named-app-errors/blob/4a823a46c02f035232ca951b2f6cf9794b432b4e/src/index.ts#L79)
+Defined in: [src/index.ts:82](https://github.com/Xunnamius/named-app-errors/blob/39b58db82425d19d50ab6c04797cd1d8cdaae37c/src/index.ts#L82)
 
 This function accepts a class extending Error and assigns it a name
 that will survive minification/transpilation, improving DX.
@@ -23,9 +23,9 @@ prototype chain for improved DX.
 
 ## Type Parameters
 
-### ErrorClassType
+### ErrorClass
 
-`ErrorClassType` *extends* [`AnyErrorClassConstructor`](../type-aliases/AnyErrorClassConstructor.md)
+`ErrorClass` *extends* [`AnyErrorClassConstructor`](../type-aliases/AnyErrorClassConstructor.md)
 
 ### Name
 
@@ -35,7 +35,7 @@ prototype chain for improved DX.
 
 ### ErrorClass
 
-`ErrorClassType`
+`ErrorClass`
 
 ### name
 
@@ -43,4 +43,4 @@ prototype chain for improved DX.
 
 ## Returns
 
-`` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: ErrorClassType & NamedErrorMixin<InstanceType<ErrorClassType>> }` & `` { [key in `is${string}`]: (parameter: LiteralUnknownUnion<AnyErrorClassConstructor>) => parameter is ErrorClassType } ``
+`` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: SpecificErrorClassConstructor<InstanceType<ErrorClass>> & NamedErrorConstructorStaticProperties<InstanceType<ErrorClass>> }` & `` { [key in `is${string}`]: (parameter: unknown) => parameter is InstanceType<ErrorClass> } ``

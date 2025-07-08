@@ -9,7 +9,8 @@
 ## Type Aliases
 
 - [AnyErrorClassConstructor](type-aliases/AnyErrorClassConstructor.md)
-- [NamedErrorMixin](type-aliases/NamedErrorMixin.md)
+- [NamedErrorConstructorStaticProperties](type-aliases/NamedErrorConstructorStaticProperties.md)
+- [SpecificErrorClassConstructor](type-aliases/SpecificErrorClassConstructor.md)
 
 ## Variables
 
