@@ -112,7 +112,8 @@ console.log(isBigError(new SomeOtherError())) // false
 console.log(isBigError(new Error())) // false
 ```
 
-Each class's `isX` function is additionally provided as a static class property:
+Each class's `.isX()` function is additionally provided as a static class
+property:
 
 ```typescript
 const { BigError } = makeNamedError(/* ... */, 'BigError');
@@ -136,12 +137,14 @@ console.log(new BiggestError() instanceof Error); // true
 console.log(new Error() instanceof BigError); // false
 ```
 
-Unlike instanceof, this comparison is both [cross-realm safe][3] and safe to use
-in situations where multiple _distinct_ copies of your error classes might exist
-in the dependency tree (e.g. [dual package hazard][4]).
+Unlike instanceof, the `.isX()`/`.isError()` function is both [cross-realm
+safe][3] and safe to use in situations where multiple _distinct_ copies of your
+error classes might exist in the dependency tree (e.g. [dual package
+hazard][4]).
 
 In case of the latter, where [two different libraries might import two different
-versions of your error classes][5], this package takes away the pain:
+versions of your error classes][5] (a surprisingly common occurrence!), this
+package takes away the pain:
 
 ```typescript
 import lib1 from 'some-lib-exports-your-error';
