@@ -122,6 +122,20 @@ console.log(BigError.isError(new SomeOtherError())); // false
 console.log(BigError.isError(new Error())); // false
 ```
 
+All instanceof checks still work as expected (but can be avoided):
+
+```typescript
+const { BigError } = makeNamedError(/* ... */, 'BigError');
+const { BiggestError } = makeNamedError(/* ... */, 'BiggestError');
+
+console.log(new BigError() instanceof BigError); // true
+console.log(new BigError() instanceof Error); // true
+console.log(new BiggestError() instanceof BiggestError); // true
+console.log(new BiggestError() instanceof Error); // true
+
+console.log(new Error() instanceof BigError); // false
+```
+
 Unlike instanceof, this comparison is both [cross-realm safe][3] and safe to use
 in situations where multiple _distinct_ copies of your error classes might exist
 in the dependency tree (e.g. [dual package hazard][4]).
