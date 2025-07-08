@@ -24,12 +24,12 @@ const lockedDownProperty = Object.freeze({
 /**
  * Additional properties exposed as static properties of named error classes.
  */
-export type NamedErrorConstructorStaticProperties<ErrorConstructor extends Error> = {
+export type NamedErrorConstructorStaticProperties<ErrorInstance extends Error> = {
   /**
    * A reference to this class's `isX` function originally returned by
    * {@link makeNamedError}.
    */
-  isError: (parameter: unknown) => parameter is ErrorConstructor;
+  isError: (parameter: unknown) => parameter is ErrorInstance;
 };
 
 /**
