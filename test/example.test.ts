@@ -1,13 +1,6 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable no-restricted-syntax */
-import {
-  $kind,
-  isANamedErrorClass,
-  isANamedErrorInstance,
-  makeNamedError
-} from 'universe';
-
-import { ErrorMessage } from 'universe:error.ts';
+import { isANamedErrorClass, isANamedErrorInstance, makeNamedError } from 'universe';
 
 it('feature examples work', async () => {
   expect.hasAssertions();
