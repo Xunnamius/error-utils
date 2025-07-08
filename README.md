@@ -239,14 +239,16 @@ npm install @-xun/error
 
 ## Usage
 
-Import:
+Start using `@-xun/error` in four quick and easy steps.
+
+1. Import:
 
 ```typescript
 import { makeNamedError } from '@-xun/error';
 ```
 
-Optionally create a "root" error class from which the rest of your errors
-classes will descend:
+2. Optionally create a "root" error class from which the rest of your custom
+   Error subclasses will descend:
 
 ```typescript
 export const { AppError } = makeNamedError(
@@ -255,7 +257,8 @@ export const { AppError } = makeNamedError(
 );
 ```
 
-Create and export the rest of your custom error classes as you normally would:
+3. Create and export the rest of your custom Error subclasses as you normally
+   would:
 
 ```typescript
 export const { ValidationError } = makeNamedError(
@@ -273,13 +276,14 @@ export const { NotFoundError } = makeNamedError(
   'NotFoundError'
 );
 
+// Optional:
 // Improve TypeScript DX by exporting the literal class types too, if you want
 export type ValidationError = InstanceType<typeof ValidationError>;
 export type AuthError = InstanceType<typeof AuthError>;
 export type NotFoundError = InstanceType<typeof NotFoundError>;
 ```
 
-Use your error classes like any other `Error` subclass (because they are):
+4. Use your custom errors like any other `Error` subclass (because they are):
 
 ```typescript
 import { ValidationError } from './shared/errors.ts';
