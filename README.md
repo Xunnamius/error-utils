@@ -32,9 +32,9 @@ TypeScript error handling DX/UX improvements capable of surviving minification.
 <!-- symbiote-template-region-end -->
 
 This tiny library provides so-called "named errors," which are normal [Error][1]
-classes (compatible with all JS runtimes) with some slight tweaks to improving
-overall handling safety, DX for the developers that work with them, and UX for
-the users that might encounter them.
+classes (compatible with all JS runtimes) with some slight tweaks to improve
+overall handling safety, improve DX for the developers that work with these
+classes, and improve UX for the users that might encounter them.
 
 <!-- symbiote-template-region-start 3 -->
 
