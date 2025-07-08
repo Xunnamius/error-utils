@@ -141,7 +141,7 @@ console.log(lib2.YourError.isError(new lib1.YourError())); // true
 
 ```typescript
 const { AppError } = makeNamedError(
-  class extends Error {
+  class AppError extends Error {
     panic() {
       console.log('oh no!');
       process.exit(123);
@@ -152,16 +152,16 @@ const { AppError } = makeNamedError(
 
 const { ValidationError } = makeNamedError(
   // Note how ValidationError extends AppError
-  class extends AppError {
-    validationErrors: string[];
+  class ValidationError extends AppError {
+    #validationErrors: string[];
 
     constructor(issues: string[]) {
       super();
-      this.validationErrors = issues;
+      this.#validationErrors = issues;
     }
 
     getValidationErrors() {
-      return validationErrors;
+      return this.#validationErrors;
     }
   },
   'ValidationError'
@@ -201,6 +201,8 @@ console.log(isANamedErrorClass(Error)); // false
 console.log(isANamedErrorInstance(new Error())); // false
 console.log(SmallError.isError(new Error())); // false
 console.log(isSmallError(new Error())); // false
+
+// All isX type guard functions will narrow unknown types properly!
 
 console.log(isANamedErrorClass(SmallError)); // true
 console.log(isANamedErrorInstance(new SmallError())); // true
@@ -253,6 +255,11 @@ export const { NotFoundError } = makeNamedError(
   class NotFoundError extends AppError {},
   'NotFoundError'
 );
+
+// Improve TypeScript DX by exporting the literal class types too, if you want
+export type ValidationError = InstanceType<typeof ValidationError>;
+export type AuthError = InstanceType<typeof AuthError>;
+export type NotFoundError = InstanceType<typeof NotFoundError>;
 ```
 
 Use your error classes like any other `Error` subclass (because they are):
