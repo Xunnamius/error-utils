@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* eslint-disable unicorn/error-message */
 // * These tests ensure the exported interfaces under test function as expected.
@@ -112,6 +113,11 @@ describe('::makeNamedError', () => {
 
     expect(isMyError(new MyErrorError())).toBeTrue();
     expect(isMyError(new (class extends MyErrorError {})())).toBeTrue();
+
+    expect(new MyErrorError() instanceof MyError).toBeTrue();
+    expect(new MyErrorError() instanceof Error).toBeTrue();
+    expect(new MyError() instanceof MyError).toBeTrue();
+    expect(new MyError() instanceof Error).toBeTrue();
   });
 
   it('does not throw if provided class extends Error directly', async () => {
