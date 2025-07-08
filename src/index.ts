@@ -8,7 +8,8 @@ export type AnyErrorClassConstructor = new (...args: any[]) => Error;
 export type SpecificErrorClassConstructor<ErrorInstance extends Error> = new (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ...args: any[]
-) => ErrorInstance;
+  // ? "Error &" makes eslint happy
+) => Error & ErrorInstance;
 
 /**
  * An internal symbol used to track class metadata.
@@ -29,7 +30,7 @@ export type NamedErrorConstructorStaticProperties<ErrorInstance extends Error> =
    * A reference to this class's `isX` function originally returned by
    * {@link makeNamedError}.
    */
-  isError: (parameter: unknown) => parameter is ErrorInstance;
+  isError: (parameter: unknown) => parameter is Error & ErrorInstance;
 };
 
 /**

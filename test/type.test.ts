@@ -83,4 +83,7 @@ it('returns properly typed named error components', async () => {
     expect(error).type.toBeAssignableTo<ChildDummyError>();
     expect(error).type.toBeAssignableTo<Error>();
   }
+
+  // ? Make sure eslint doesn't complain that we can't throw stuff
+  throw new ChildDummyError();
 });
