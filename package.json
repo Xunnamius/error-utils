@@ -1,6 +1,6 @@
 {
   "name": "@-xun/error",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Provides so-called named errors with the goal of improving overall error handling safety, DX, and UX on error",
   "keywords": [],
   "homepage": "https://github.com/Xunnamius/error-utils#readme",
