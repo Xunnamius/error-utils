@@ -36,6 +36,12 @@ classes (compatible with all JS runtimes) with some slight tweaks to improve
 overall handling safety, improve DX for the developers that work with these
 classes, and improve UX for the users that might encounter them.
 
+More specifically, this library returns a factory function
+([`makeNamedError`][6]) capable of creating custom [Error][1] subclasses with
+powerful [cross][4]-[package][5] [cross-realm instanceof checks][3] and
+human-readable names that both survive transpilation/minification and show up in
+stack traces.
+
 <!-- symbiote-template-region-start 3 -->
 
 ---
@@ -491,3 +497,4 @@ specification. Contributions of any kind welcome!
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof#instanceof_and_multiple_realms
 [4]: https://github.com/GeoffreyBooth/dual-package-hazard
 [5]: https://github.com/isaacs/node-primordials/issues/3
+[6]: ./docs/src/functions/makeNamedError.md
