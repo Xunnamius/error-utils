@@ -1,6 +1,6 @@
 {
   "name": "@-xun/error",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Create Error subclasses with powerful cross-realm instanceof checks and human-readable names that survive transpilation/minification and show up in stack traces",
   "keywords": [],
   "homepage": "https://github.com/Xunnamius/error-utils#readme",

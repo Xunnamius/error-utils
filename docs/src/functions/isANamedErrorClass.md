@@ -8,7 +8,7 @@
 
 > **isANamedErrorClass**(`parameter`): `parameter is AnyErrorClassConstructor & NamedErrorConstructorStaticProperties<Error>`
 
-Defined in: [src/index.ts:56](https://github.com/Xunnamius/named-app-errors/blob/550bfbcf4c0f36fec3564e86927ee97dd5416e9d/src/index.ts#L56)
+Defined in: [src/index.ts:56](https://github.com/Xunnamius/named-app-errors/blob/3d8c647b121cbd6ee69eeac4f72f9d294cbccd84/src/index.ts#L56)
 
 Returns `true` if `parameter` is an Error subclass (_not an
 instance_) created using [makeNamedError](makeNamedError.md).
