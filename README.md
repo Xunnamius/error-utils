@@ -496,5 +496,5 @@ specification. Contributions of any kind welcome!
 [3]:
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof#instanceof_and_multiple_realms
 [4]: https://github.com/GeoffreyBooth/dual-package-hazard
-[5]: https://github.com/isaacs/node-primordials/issues/3
+[5]: https://github.com/isaacs/node-primordials/issues/3#issuecomment-1592383083
 [6]: ./docs/src/functions/makeNamedError.md
