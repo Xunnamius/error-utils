@@ -8,7 +8,7 @@
 
 > **NamedErrorConstructorStaticProperties**\<`ErrorInstance`\> = `object`
 
-Defined in: [src/index.ts:28](https://github.com/Xunnamius/named-app-errors/blob/3d8c647b121cbd6ee69eeac4f72f9d294cbccd84/src/index.ts#L28)
+Defined in: [src/index.ts:28](https://github.com/Xunnamius/named-app-errors/blob/f21b452c06da0e5ef8db74dc2fa7d036dfc45b1d/src/index.ts#L28)
 
 Additional properties exposed as static properties of named error classes.
 
@@ -24,7 +24,7 @@ Additional properties exposed as static properties of named error classes.
 
 > **isError**: (`parameter`) => `parameter is Error & ErrorInstance`
 
-Defined in: [src/index.ts:33](https://github.com/Xunnamius/named-app-errors/blob/3d8c647b121cbd6ee69eeac4f72f9d294cbccd84/src/index.ts#L33)
+Defined in: [src/index.ts:33](https://github.com/Xunnamius/named-app-errors/blob/f21b452c06da0e5ef8db74dc2fa7d036dfc45b1d/src/index.ts#L33)
 
 A reference to this class's `isX` function originally returned by
 [makeNamedError](../functions/makeNamedError.md).

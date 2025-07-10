@@ -8,7 +8,7 @@
 
 > **makeNamedError**\<`ErrorClass`, `Name`\>(`ErrorClass`, `name`): `` { [key in `$kind_${string}`]: symbol } `` & `{ [key in string]: SpecificErrorClassConstructor<InstanceType<ErrorClass>> & NamedErrorConstructorStaticProperties<InstanceType<ErrorClass>> }` & `` { [key in `is${string}`]: (parameter: unknown) => parameter is InstanceType<ErrorClass> } ``
 
-Defined in: [src/index.ts:83](https://github.com/Xunnamius/named-app-errors/blob/3d8c647b121cbd6ee69eeac4f72f9d294cbccd84/src/index.ts#L83)
+Defined in: [src/index.ts:83](https://github.com/Xunnamius/named-app-errors/blob/f21b452c06da0e5ef8db74dc2fa7d036dfc45b1d/src/index.ts#L83)
 
 This function accepts a class extending Error and assigns it a name
 that will survive minification/transpilation, improving DX.
