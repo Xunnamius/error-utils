@@ -282,10 +282,21 @@ export const { NotFoundError } = makeNamedError(
   'NotFoundError'
 );
 
-// Optional:
-// Improve TypeScript DX by exporting the literal class types too, if you want
+// Improve TypeScript DX by exporting the literal class types too, if you want:
+
+/**
+ * Helpful comment for users of your Error subclass goes here.
+ */
 export type ValidationError = InstanceType<typeof ValidationError>;
+
+/**
+ * Helpful comment for users of your Error subclass goes here.
+ */
 export type AuthError = InstanceType<typeof AuthError>;
+
+/**
+ * Helpful comment for users of your Error subclass goes here.
+ */
 export type NotFoundError = InstanceType<typeof NotFoundError>;
 ```
 
